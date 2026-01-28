@@ -42,6 +42,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var darkDarkGreen = new Colour("#73A043");
         var darkDarkPurple = new Colour("#8D8BFA");
         var salmon = new Colour(236, 129, 108, Colour.VeryDarkGrey);
+        // our colors
         var peachFuzz = new Colour("#ffbe98");
         var apricotNectar = new Colour("#ecaa79");
         var lavender = new Colour("#AFA4CE");
@@ -60,17 +61,17 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var flowers2 = new BackgroundImage("https://images.pexels.com/photos/355748/pexels-photo-355748.jpeg?cs=srgb&dl=pexels-pixabay-355748.jpg&fm=jpg", true, "min(100%, 1300px)", null, 0);
     
         Sections = [
-            new Section.TodoListSummary(new SectionTheme(salmon, Colour.White, new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, Colour.White, null)))),
-            new Section.HowWeMet(new SectionTheme(pink, Colours.Primary, filledBox)),
+            new Section.TodoListSummary(new SectionTheme(apricotNectar, Colour.White, new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, Colour.White, null)))),
+            new Section.HowWeMet(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.Timeline(new SectionTheme(bricks, Colours.Primary, outlinedBox), true),
-            new Section.VenueShowcase(new SectionTheme(orange, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(purple, darkDarkGreen, null)))),
+            new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkGreen, null)))),
             new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
-            new Section.Accommodation(new SectionTheme(pink, Colours.Primary, filledBox)),
+            new Section.Accommodation(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.TravelDirections(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox)),
             new Section.SimpleTimeline(new SectionTheme(flowers2, Colours.Primary, filledBox)),
             new Section.Gallery(),
-            new Section.DressCode(new SectionTheme(forest, Colours.Primary, filledBox), true, false),
-            new Section.Contact(new SectionTheme(blueGreen, Colours.Secondary, whiteFilledBox))
+            new Section.DressCode(new SectionTheme(lavenderFog, Colours.Primary, filledBox), true, false),
+            new Section.Contact(new SectionTheme(pastelLilac, Colours.Secondary, whiteFilledBox))
         ];
         
         TopButtons = new TopButtonsConfig(
