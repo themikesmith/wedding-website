@@ -5,7 +5,7 @@ using WeddingWebsite.Models.WebsiteElement;
 
 namespace WeddingWebsite.Config.ThemeAndLayout;
 
-public class DemoConfig : DefaultConfig, IWebsiteConfig
+public class TestConfig : DefaultConfig, IWebsiteConfig
 {
     public new WeddingColours Colours { get; } = new (
         new Colour("#b9b8ff"),
@@ -18,7 +18,7 @@ public class DemoConfig : DefaultConfig, IWebsiteConfig
         "You have both a Timeline and SimpleTimeline section. Since both sections display the same information, choose the level of detail you want and remove the other section."
     ];
 
-    public DemoConfig() {
+    public TestConfig() {
         var surfaceVariant = new Colour(254, 252, 231);
         
         // Some pastel colours here that you may want to choose from
