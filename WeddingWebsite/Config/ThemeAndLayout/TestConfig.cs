@@ -42,6 +42,11 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var darkDarkGreen = new Colour("#73A043");
         var darkDarkPurple = new Colour("#8D8BFA");
         var salmon = new Colour(236, 129, 108, Colour.VeryDarkGrey);
+        var peachFuzz = new Colour("#ffbe98");
+        var apricotNectar = new Colour("#ecaa79");
+        var lavender = new Colour("#AFA4CE");
+        var lavenderFog = new Colour("#D5C9DD");
+        var pastelLilac = new Colour("#BCAFCF");
 
         // A few box styles you might like to try
         var filledBox = new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, darkDarkPurple, null));
