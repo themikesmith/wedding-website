@@ -14,10 +14,10 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         new Colour("#FAFAE8")
     );*//
     public new WeddingColours Colours { get; } = new (
-        new Colour("#D5C9DD"),
-        new Colour("#d1e5f4"),
-        new Colour("#AFA4CE"),
-        new Colour("#fffaee")
+        new Colour("#D5C9DD"), // lavenderFog
+        new Colour("#d1e5f4"), // subtleBlue
+        new Colour("#AFA4CE"), // lavender
+        new Colour("#fffaee") // islandSpice
     );
     public new DemoMode DemoMode => new DemoMode.Enabled([]);
     public new IEnumerable<string> IgnoredValidationIssues => [
@@ -55,6 +55,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var lavenderFog = new Colour("#D5C9DD");
         var pastelLilac = new Colour("#BCAFCF");
         var islandSpice = new Colour("#fffaee");
+        var subtleBlue = new Colour("#D1E5F4");
 
         // A few box styles you might like to try
         var filledBox = new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, darkDarkPurple, null));
