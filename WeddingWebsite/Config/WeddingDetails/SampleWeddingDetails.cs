@@ -210,7 +210,7 @@ public sealed class SampleWeddingDetails : IWeddingDetails
     
     private NotablePerson GetPersonByRole(Role role) => NotablePeople.First(p => p.Role == role);
 
-    public DateOnly WeddingDate { get; } = DateOnly.Parse("2026-6-20");
+    public DateOnly WeddingDate { get; } = DateOnly.Parse("2028-8-14");
         
     public Venue ReceptionVenue { get; } = new(
         "Buckingham Palace", 
@@ -241,7 +241,6 @@ public sealed class SampleWeddingDetails : IWeddingDetails
         "London, SW1P 3PA",
         new TravelDirections(
             [
-                new WebsiteSection("Directions", "https://www.google.com/maps/dir//Westminster+Abbey,+Dean's+Yard,+London+SW1P+3PA,+United+Kingdom/@39.0267995,-77.844326,7z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x487604c4ba43352f:0xda8effa2059b537a!2m2!1d-0.1272993!2d51.4993695?entry=ttu&g_ep=EgoyMDI2MDEyNy4wIKXMDSoASAFQAw%3D%3D"),
                 new WebsiteSection("Train", "We suggest arriving by tube. The church is a 3 minute walk from Westminster tube station, which is served by the circle and district lines."),
                 new WebsiteSection("Cycling", "There is no bicycle parking available at the church, so we do not suggest cycling to the wedding."),
                 new WebsiteSection("Parking", "There is no parking available, except for blue badge holders. Please contact us on the RSVP form if you require a parking space.")
@@ -274,8 +273,8 @@ public sealed class SampleWeddingDetails : IWeddingDetails
     public AccommodationDetails AccommodationDetails { get; } = new (
         "If you would like to stay until the end, we suggest staying at a nearby hotel, AirBnB, or Vrbo.",
         new List<Hotel> {
-            new ("The Rubens at the Palace",  "We have a small room block at a beautiful 5-star hotel just a few minutes from the palace", new Location(51.4982679, -0.1435535), "39 Buckingham Palace Road, London, SW1W 0PS", 1, new Price(209, new Discount(10, "Quote 'Palace'")), "https://youtube.com/watch?v=dQw4w9WgXcQ", true, new WebsiteImage("https://prod-media.redcarnationhotels.com/media/iozjaisp/the-rubens-at-the-palace-exterior.jpg?width=768&height=732&format=jpg&quality=80&rxy=0.5789473684210527,0.9093197762021246&v=1dc7a72df2f9450", "The rubens hotel")),
-            new("The Z Hotel", "We have a larger room block at a second hotel that's a bit more wallet-friendly.", new Location(51.4957314, -0.1462508), "5 Lower Belgrave Street, London, SW1W 0NR", 4, new Price(63), "https://youtube.com/watch?v=dQw4w9WgXcQ"),
+            new ("The Rubens at the Palace",  "A beautiful 5-star hotel just a few minutes from the palace", new Location(51.4982679, -0.1435535), "39 Buckingham Palace Road, London, SW1W 0PS", 1, new Price(209, new Discount(10, "Quote 'Palace'")), "https://youtube.com/watch?v=dQw4w9WgXcQ", true, new WebsiteImage("https://prod-media.redcarnationhotels.com/media/iozjaisp/the-rubens-at-the-palace-exterior.jpg?width=768&height=732&format=jpg&quality=80&rxy=0.5789473684210527,0.9093197762021246&v=1dc7a72df2f9450", "The rubens hotel")),
+            new("The Z Hotel", "A cheaper option if you'd rather something less exciting", new Location(51.4957314, -0.1462508), "5 Lower Belgrave Street, London, SW1W 0NR", 4, new Price(63), "https://youtube.com/watch?v=dQw4w9WgXcQ"),
         },
         new WebsiteImage("https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/fd/4e/53/caption.jpg?w=900&h=500&s=1", "A hotel room")
     );
