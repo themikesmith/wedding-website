@@ -17,6 +17,7 @@ public class DefaultConfig : IWebsiteConfig
     public TopButtonsConfig TopButtons { get; protected set; }
     public NavbarConfig Navbar { get; protected set; }
     public bool BrideFirst => false;
+    public bool DateDayBeforeMonth => true;
     public PageConfig.Account AccountConfig { get; set; }
     public PageConfig.Registry RegistryConfig { get; set; }
     public PageConfig.RegistryItem RegistryItemConfig { get; set; }
