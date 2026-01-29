@@ -7,11 +7,17 @@ namespace WeddingWebsite.Config.ThemeAndLayout;
 
 public class TestConfig : DefaultConfig, IWebsiteConfig
 {
-    public new WeddingColours Colours { get; } = new (
+    /** public new WeddingColours Colours { get; } = new (
         new Colour("#b9b8ff"),
         new Colour("#d0f0ff"),
         new Colour("#b9b8ff"),
         new Colour("#FAFAE8")
+    );*//
+    public new WeddingColours Colours { get; } = new (
+        new Colour("#fffaee"),
+        new Colour("#ffbe98"),
+        new Colour("#D5C9DD"),
+        new Colour("#BCAFCF")
     );
     public new DemoMode DemoMode => new DemoMode.Enabled([]);
     public new IEnumerable<string> IgnoredValidationIssues => [
@@ -48,6 +54,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var lavender = new Colour("#AFA4CE");
         var lavenderFog = new Colour("#D5C9DD");
         var pastelLilac = new Colour("#BCAFCF");
+        var islandSpice = new Colour("#fffaee");
 
         // A few box styles you might like to try
         var filledBox = new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, darkDarkPurple, null));
@@ -64,14 +71,14 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
             new Section.TodoListSummary(new SectionTheme(apricotNectar, Colour.White, new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, Colour.White, null)))),
             new Section.HowWeMet(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.Timeline(new SectionTheme(bricks, Colours.Primary, outlinedBox), true),
-            new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkGreen, null)))),
+            new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkPurple, null)))),
             new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
             new Section.Accommodation(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.TravelDirections(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox)),
             new Section.SimpleTimeline(new SectionTheme(flowers2, Colours.Primary, filledBox)),
             new Section.Gallery(),
-            new Section.DressCode(new SectionTheme(lavenderFog, Colours.Primary, filledBox), true, false),
-            new Section.Contact(new SectionTheme(pastelLilac, Colours.Secondary, whiteFilledBox))
+            new Section.DressCode(new SectionTheme(forest, Colours.Primary, filledBox), true, false),
+            new Section.Contact(new SectionTheme(peachFuzz, Colours.Secondary, whiteFilledBox))
         ];
         
         TopButtons = new TopButtonsConfig(
