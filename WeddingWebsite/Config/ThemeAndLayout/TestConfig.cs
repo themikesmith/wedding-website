@@ -7,18 +7,18 @@ namespace WeddingWebsite.Config.ThemeAndLayout;
 
 public class TestConfig : DefaultConfig, IWebsiteConfig
 {
-    public new WeddingColours Colours { get; } = new (
+    /**public new WeddingColours Colours { get; } = new (
         new Colour("#b9b8ff"),
         new Colour("#d0f0ff"),
         new Colour("#b9b8ff"),
         new Colour("#FAFAE8")
-    );
-    /**public new WeddingColours Colours { get; } = new (
-        new Colour("#fffaee"),
-        new Colour("#ffbe98"),
+    );*//
+    public new WeddingColours Colours { get; } = new (
         new Colour("#D5C9DD"),
-        new Colour("#BCAFCF")
-    );**/
+        new Colour("#d1e5f4"),
+        new Colour("#AFA4CE"),
+        new Colour("#fffaee")
+    );
     public new DemoMode DemoMode => new DemoMode.Enabled([]);
     public new IEnumerable<string> IgnoredValidationIssues => [
         "You have both a Timeline and SimpleTimeline section. Since both sections display the same information, choose the level of detail you want and remove the other section."
