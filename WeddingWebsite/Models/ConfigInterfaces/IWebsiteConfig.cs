@@ -36,6 +36,7 @@ public interface IWebsiteConfig
     /// If false, shows "GROOM and BRIDE". If true, shows "BRIDE and GROOM".
     /// </summary>
     public bool BrideFirst { get; }
+    public bool DateDayBeforeMonth { get; }
     
     /// <summary>
     /// Config for the "My Account" page.
