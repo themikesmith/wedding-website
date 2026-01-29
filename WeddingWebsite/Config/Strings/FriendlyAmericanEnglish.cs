@@ -11,6 +11,10 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
     public new String VenueShowcase => "Explore Red Bank";
     public new String OrderOfTheDay => "Order of the Weekend";
 
+    public new string ContactUsEnterCategory => "What is your inquiry about?";
+    public new string CategoryOfEnquiry => "Category of Inquiry";
+    public new string NoContactsBecauseNoCategory => "Choose a category of inquiry to see contacts.";
+
     public new string AccountSharedWithGuests(int guestCount) =>  $"This account is shared between {guestCount} guest{(guestCount != 1 ? "s" : "")}. Feel free to share your login details amongst all the guests tied to this account (they won't be able to access the website otherwise).";
     
     public new string RegistryDescription1 => "Please do not feel under any pressure to give a gift - there is no obligation at all to do so! However, if you would like to give a gift, this page contains some suggestions of things we'd like. If you'd prefer to give something else, that's fine too!";
