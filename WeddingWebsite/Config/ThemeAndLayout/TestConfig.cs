@@ -12,7 +12,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         new Colour("#d0f0ff"),
         new Colour("#b9b8ff"),
         new Colour("#FAFAE8")
-    );*//
+    );*/
     public new WeddingColours Colours { get; } = new (
         new Colour("#D5C9DD"), // lavenderFog
         new Colour("#d1e5f4"), // subtleBlue
