@@ -73,12 +73,12 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
             new Section.HowWeMet(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.Timeline(new SectionTheme(bricks, Colours.Primary, outlinedBox), true),
             new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkGreen, null)))),
-            new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
-            new Section.Accommodation(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
+            // new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
             new Section.TravelDirections(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox)),
+            new Section.Accommodation(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             // new Section.SimpleTimeline(new SectionTheme(flowers2, Colours.Primary, filledBox)),
             new Section.Gallery(),
-            new Section.DressCode(new SectionTheme(forest, Colours.Primary, filledBox), true, false),
+            new Section.DressCode(new SectionTheme(flowers, Colours.Primary, filledBox), true, false),
             new Section.Contact(new SectionTheme(peachFuzz, Colours.Secondary, whiteFilledBox))
         ];
         
