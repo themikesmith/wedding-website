@@ -241,7 +241,7 @@ public sealed class SampleWeddingDetails : IWeddingDetails
         "London, SW1P 3PA",
         new TravelDirections(
             [
-                new WebsiteSection("Directions", new WebsiteLink("https://www.google.com/maps/dir//Westminster+Abbey,+Dean's+Yard,+London+SW1P+3PA,+United+Kingdom/@39.0267995,-77.844326,7z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x487604c4ba43352f:0xda8effa2059b537a!2m2!1d-0.1272993!2d51.4993695?entry=ttu&g_ep=EgoyMDI2MDEyNy4wIKXMDSoASAFQAw%3D%3D")),
+                new WebsiteSection("Directions", "https://www.google.com/maps/dir//Westminster+Abbey,+Dean's+Yard,+London+SW1P+3PA,+United+Kingdom/@39.0267995,-77.844326,7z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x487604c4ba43352f:0xda8effa2059b537a!2m2!1d-0.1272993!2d51.4993695?entry=ttu&g_ep=EgoyMDI2MDEyNy4wIKXMDSoASAFQAw%3D%3D"),
                 new WebsiteSection("Train", "We suggest arriving by tube. The church is a 3 minute walk from Westminster tube station, which is served by the circle and district lines."),
                 new WebsiteSection("Cycling", "There is no bicycle parking available at the church, so we do not suggest cycling to the wedding."),
                 new WebsiteSection("Parking", "There is no parking available, except for blue badge holders. Please contact us on the RSVP form if you require a parking space.")
