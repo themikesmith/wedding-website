@@ -19,7 +19,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         new Colour("#AFA4CE"), // lavender
         new Colour("#fffaee") // islandSpice
     );
-    public new DemoMode DemoMode => new DemoMode.Enabled([]);
+    public new DemoMode DemoMode => new DemoMode.Disabled([]);
     public new IEnumerable<string> IgnoredValidationIssues => [
         "You have both a Timeline and SimpleTimeline section. Since both sections display the same information, choose the level of detail you want and remove the other section."
     ];
