@@ -32,6 +32,7 @@ public sealed class TestWeddingDetails : IWeddingDetails
             new (
                 "Ceremony", 
                 DateOnly.Parse("2027-01-01"),
+                DateOnly.Parse("2027-01-01"),
                 TimeOnly.Parse("12:00"), 
                 TimeOnly.Parse("13:00"), 
                 "The church service in which we get married.",
@@ -42,6 +43,7 @@ public sealed class TestWeddingDetails : IWeddingDetails
             new (
                 "Drinks Reception", 
                 DateOnly.Parse("2027-01-01"),
+                DateOnly.Parse("2027-01-01"),
                 TimeOnly.Parse("13:30"),
                 TimeOnly.Parse("15:30"), 
                 "Join us for drinks and canapés in the garden.", 
@@ -51,6 +53,7 @@ public sealed class TestWeddingDetails : IWeddingDetails
                 ),
             new (
                 "Wedding Breakfast", 
+                DateOnly.Parse("2027-01-01"),
                 DateOnly.Parse("2027-01-01"),
                 TimeOnly.Parse("15:30"), 
                 TimeOnly.Parse("19:00"),
@@ -70,8 +73,9 @@ public sealed class TestWeddingDetails : IWeddingDetails
             new (
                 "Evening Reception", 
                 DateOnly.Parse("2027-01-01"),
+                DateOnly.Parse("2027-01-02"),
                 TimeOnly.Parse("19:00"),
-                TimeOnly.Parse("23:00"),
+                TimeOnly.Parse("00:00"),
                 "An evening of dancing and celebration.", 
                 ReceptionVenue, 
                 "The Barn",
