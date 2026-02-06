@@ -1,7 +1,37 @@
 ﻿@using WeddingWebsite.Components.Containers
 @using WeddingWebsite.Models.Events
 
-@if (Venues.Count >= 2)
+@if (Venues.Count >= 4)
+{
+    <SideBySide HalfSpacing="10px">
+        <LeftContent>
+            <VenueShowcaseVenue Venue="@Venues[0]"/>
+        </LeftContent>
+        <RightContent>
+            <VenueShowcaseVenue Venue="@Venues[1]"/>
+        </RightContent>
+    </SideBySide>
+    <p></p>
+    <SideBySide HalfSpacing="10px">
+        <LeftContent>
+            <VenueShowcaseVenue Venue="@Venues[2]"/>
+        </LeftContent>
+        <RightContent>
+            <VenueShowcaseVenue Venue="@Venues[3]"/>
+        </RightContent>
+    </SideBySide>
+} else if (Venues.Count == 3)
+{
+    <SideBySide HalfSpacing="10px">
+        <LeftContent>
+            <VenueShowcaseVenue Venue="@Venues[0]"/>
+        </LeftContent>
+        <RightContent>
+            <VenueShowcaseVenue Venue="@Venues[1]"/>
+        </RightContent>
+    </SideBySide>
+    <VenueShowcaseVenue Venue="@Venues[2]" Horizontal="true"/>
+} else if (Venues.Count == 2)
 {
     <SideBySide HalfSpacing="10px">
         <LeftContent>
