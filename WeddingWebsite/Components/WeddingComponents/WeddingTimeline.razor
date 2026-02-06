@@ -13,7 +13,7 @@
     @foreach (var item in timelineItems) {
         <MudTimelineItem Size=@item.GetDotSize() Color=Color.Primary Elevation="25" UserAttributes="@(new Dictionary<string, object?> {{"id", item.GetId()}})">
             <ItemOpposite>
-                <h3 style="color: @PrimaryColourAdjusted;@CssTextShadow">@item.Time</h3>
+                <h3 style="color: @PrimaryColourAdjusted;@CssTextShadow">@item.Date @item.Time</h3>
             </ItemOpposite>
             <ItemContent>
                 <TimelineItemBox Item="@item"/>
@@ -101,6 +101,7 @@
             timelineItems = timelineItems.Append(new TimelineItem
             (
                 TimelineItemType.Event,
+                ev.Date.ToShortDateString(),
                 ev.Start.ToShortTimeString(),
                 ev.Name,
                 "",
@@ -123,6 +124,7 @@
     private TimelineItem GenerateTransportTimelineItem(Event ev, TimeOnly? previousEndTime, string? previousVenueName) {
         return new TimelineItem (
             type : TimelineItemType.VenueChange,
+            date : ev.Date.ToShortDateString(),
             time : previousEndTime?.ToShortTimeString() ?? "Start",
             title : "Transport",
             description : ev.Venue.Directions!.Description,
@@ -153,6 +155,7 @@
         }
         return new TimelineItem(
             TimelineItemType.Accommodation,
+            Events.LastOrDefault()?.Date.ToString(),
             Events.LastOrDefault()?.End.ToString() ?? "End",
             "Accommodation",
             AccommodationDetails.Description ?? "If you would like to book accommodation, here are some recommendations",
@@ -231,6 +234,7 @@
     
     public class TimelineItem (
         TimelineItemType type,
+        string date,
         string time,
         string title,
         string description,
@@ -243,6 +247,7 @@
     )
     {
         public TimelineItemType Type { get; } = type;
+        public string Date { get; } = date;
         public string Time { get; } = time;
         public string Title { get; } = title;
         public IEnumerable<WebsiteSection> Description { get; init; } = [new (null, description)];
