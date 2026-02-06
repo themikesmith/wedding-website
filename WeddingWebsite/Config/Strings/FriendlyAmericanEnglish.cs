@@ -8,7 +8,7 @@ namespace WeddingWebsite.Config.Strings;
 /// </summary>
 public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
 {
-    public new String VenueShowcase => "Explore Red Bank";
+    public new String VenueShowcase => "Explore & Stay";
     public new String OrderOfTheDay => "Order of the Weekend";
 
     public new string ContactUsEnterCategory => "What is your inquiry about?";
