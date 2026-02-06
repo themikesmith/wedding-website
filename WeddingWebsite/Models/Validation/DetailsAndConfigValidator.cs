@@ -392,14 +392,14 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     /// <summary>
     /// This could be fixed fairly easily, but it's not there right now.
     /// </summary>
-    private void VenueShowcase_ShouldNotHaveMoreThanTwoVenues(IWeddingDetails details, IWebsiteConfig config)
+    private void VenueShowcase_ShouldNotHaveMoreThanFourVenues(IWeddingDetails details, IWebsiteConfig config)
     {
         if (GetSection<Section.VenueShowcase>(config) != null)
         {
             var venues = details.Events.Select(ev => ev.Venue).DistinctBy(v => v.Name);
-            if (venues.Count() > 2)
+            if (venues.Count() > 4)
             {
-                Warning($"The venue showcase section only supports a maximum of two venues. You have {venues.Count()} venues. Only the first two will be shown.");
+                Warning($"The venue showcase section only supports a maximum of four venues. You have {venues.Count()} venues. Only the first four will be shown.");
             }
         }
     }
