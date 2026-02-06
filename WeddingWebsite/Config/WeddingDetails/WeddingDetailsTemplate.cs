@@ -23,6 +23,7 @@ public sealed class WeddingDetailsTemplate : IWeddingDetails
         {
             new (
                 "Ceremony", 
+                DateOnly.Parse("2027-01-01"),
                 TimeOnly.Parse("13:00"), 
                 TimeOnly.Parse("14:30"), 
                 "Description here.",
@@ -32,6 +33,7 @@ public sealed class WeddingDetailsTemplate : IWeddingDetails
             ),
             new (
                 "Wedding Breakfast", 
+                DateOnly.Parse("2027-01-01"),
                 TimeOnly.Parse("16:00"), 
                 TimeOnly.Parse("19:00"),
                 "Description here.", 

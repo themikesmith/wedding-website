@@ -165,7 +165,8 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     /// </summary>
     private void Events_EarliestStartTimeIsFirstEvent(IWeddingDetails details) {
         var firstStartTime = details.Events.First().Start;
-        if (details.Events.Any(e => e.Start < firstStartTime)) {
+        var firstStartDate = details.Events.First().Date;
+        if (details.Events.Any(e => (e.Date < firstStartDate && e.Start < firstStartTime))) {
             Error("The earliest start time must be the first element in the list. This is used for the countdown timer.");
         }
     }
@@ -175,12 +176,13 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     /// </summary>
     private void Events_LatestFinishTimeIsLastEvent(IWeddingDetails details) {
         var lastFinishTime = details.Events.Last().End;
+        var lastFinishDate = details.Events.Last().Date;
         if (lastFinishTime == null) {
             // An unspecified end time is a valid state
             Info("You haven't specified an end time for the final event. Giving a finish time may be useful for guests, and it will show up in the accommodation section.");
             return;
         }
-        if (details.Events.Any(e => e.End != null && e.End > lastFinishTime)) {
+        if (details.Events.Any(e => e.End != null && e.End > lastFinishTime && e.Date > lastFinishDate)) {
             Error("The latest finish time must be the last element in the list. This is used for the accommodation details.");
         }
     }
@@ -190,13 +192,15 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     /// </summary>
     private void Events_PreviousEndTimeMatchesWithNextStartTime(IWeddingDetails details) {
         TimeOnly? previousEndTime = null;
+        DateOnly? previousDate = null;
         string? previousVenue = null;
         foreach (var ev in details.Events) {
-            if (previousEndTime != null && ev.Start != previousEndTime && ev.Venue.Name == previousVenue) {
+            if (previousEndTime != null && ev.Start != previousEndTime && ev.Date != previousDate && ev.Venue.Name == previousVenue) {
                 Warning($"The event '{ev.Name}' starts at {ev.Start}, but the previous event ends at {previousEndTime}. What's happening during this spare {ev.Start - previousEndTime}? If it's a break, add a new event to represent this period of time. If it's travelling between different venues, ensure the venues are set to different values. If this is an error, set the end time of the previous event to {ev.Start} (or if you set it to null, it will be interpreted as {ev.Start}).");
             }
             previousEndTime = ev.End ?? ev.Start;
             previousVenue = ev.Venue.Name;
+            previousDate = ev.Date;
         }
     }
 
@@ -206,13 +210,15 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     private void Events_StartTimesAreInChronologicalOrder(IWeddingDetails details)
     {
         TimeOnly? previousStartTime = null;
+        DateOnly? previousDate = null;
         foreach (var ev in details.Events)
         {
-            if (previousStartTime != null && ev.Start < previousStartTime)
+            if (previousStartTime != null && ev.Start < previousStartTime && previousDate != null && ev.Date <= previousDate)
             {
-                Error($"The event '{ev.Name}' starts at {ev.Start}, which is before the previous event that starts at {previousStartTime}. Events should be defined in chronological order.");
+                Error($"The event '{ev.Name}' starts at {ev.Date}, {ev.Start}, which is before the previous event that starts at {previousDate},  {previousStartTime}. Events should be defined in chronological order.");
             }
             previousStartTime = ev.Start;
+            previousDate = ev.Date;
         }
     }
     
@@ -222,14 +228,17 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     private void Events_EndTimesAreInChronologicalOrder(IWeddingDetails details)
     {
         TimeOnly? previousEndTime = null;
+        DateOnly? previousDate = null;
         foreach (var ev in details.Events)
         {
             var endTime = ev.End ?? ev.Start;
-            if (endTime < previousEndTime)
+            var evDate = ev.Date;
+            if (endTime < previousEndTime && previousDate != null && evDate <= previousDate)
             {
-                Error($"The event '{ev.Name}' ends at {endTime}, which is before the previous event that ends at {previousEndTime}. Events should be defined in chronological order.");
+                Error($"The event '{ev.Name}' ends at {evDate}, {endTime}, which is before the previous event that ends at {previousDate}, {previousEndTime}. Events should be defined in chronological order.");
             }
             previousEndTime = endTime;
+            previousDate = evDate;
         }
     }
     
@@ -240,7 +249,7 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
     {
         foreach (var ev in details.Events)
         {
-            if (ev.End != null && ev.End < ev.Start)
+            if (ev.End != null && ev.End < ev.Start) // TODO add start and end dates, not just a singledate - cannot handle crossing midnight
             {
                 Error($"The event '{ev.Name}' ends at {ev.End}, which is before it starts at {ev.Start}. The end time must be after the start time.");
             }
