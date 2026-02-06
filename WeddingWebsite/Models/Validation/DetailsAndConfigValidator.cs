@@ -40,7 +40,7 @@ public class DetailsAndConfigValidator: IDetailsAndConfigValidator
         Contacts_ShouldNotHaveDuplicates(details);
         Contacts_ShouldNotHaveEmptyMethods_IfReasonsIsNonEmpty(details);
         
-        VenueShowcase_ShouldNotHaveMoreThanTwoVenues(details, config);
+        VenueShowcase_ShouldNotHaveMoreThanFourVenues(details, config);
         
         Accommodation_ShouldBeEmphasised_IfThereIsOnlyOneHotel(details);
         Accommodation_ShouldHaveAtLeastOneHotel_IfTheSectionIsIncluded(details, config);
