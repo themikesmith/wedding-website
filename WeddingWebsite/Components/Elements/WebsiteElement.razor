@@ -16,7 +16,10 @@
     <GoogleMapsEmbed Location=@(((WebsiteGoogleMapsEmbed)Element).Location) Height="@MaxHeight" ClassName="@ClassName" />
 } else if (Element is Models.WebsiteElement.LinkButton) {
     <LinkButton Url="@(((Models.WebsiteElement.LinkButton)Element).Link)">@(((Models.WebsiteElement.LinkButton)Element).Text)</LinkButton>
-} else if (Element is not null) {
+} else if (Element is Models.WebsiteElement.WebsiteLink) {
+    <LinkButton Url="@(((Models.WebsiteElement.WebsiteLink)Element).Url)">@(((Models.WebsiteElement.WebsiteLink)Element).DisplayText)</LinkButton>
+}
+else if (Element is not null) {
     <p>Website element type not recognised: @Element?.GetType()</p>
 }
 
