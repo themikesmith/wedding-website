@@ -12,7 +12,12 @@
     <MudCarousel TData="BigGalleryItem" ItemsSource="WeddingDetails.Gallery.Favourites" Style="@CarouselCss" AutoCycle="true" ShowArrows="true" @bind-SelectedIndex="CurrentIndex" EnableSwipeGesture="false">
         <ItemTemplate>
             <div class="carousel-item">
+                @if (@context.Image.RunAtServer) {
+                <img src="@context.Image.Url" runat="server" alt="@context.Image.AltText"/>
+                }
+                else {
                 <img src="@context.Image.Url" alt="@context.Image.AltText"/>
+                }
                 @if (context.Title != "")
                 {
                     <p class="title carousel-overlay-text">@context.Title</p>
