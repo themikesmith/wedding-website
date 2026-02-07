@@ -86,7 +86,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         TopButtons = new TopButtonsConfig(
             [
                 new LinkButton("Accommodation", "#accommodation"),
-                new LinkButton("RSVP", "/rsvp")
+                // new LinkButton("RSVP", "/rsvp")
             ],
             yellow
         );
