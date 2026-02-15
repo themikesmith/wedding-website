@@ -14,10 +14,10 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         new Colour("#FAFAE8")
     );*/
     public new WeddingColours Colours { get; } = new (
-        new Colour("#D5C9DD"), // lavenderFog
-        new Colour("#d1e5f4"), // subtleBlue
-        new Colour("#AFA4CE"), // lavender
-        new Colour("#fffaee") // islandSpice
+        new Colour("#D5C9DD"), // lavenderFog // primary
+        new Colour("#d1e5f4"), // subtleBlue // primary background
+        new Colour("#AFA4CE"), // lavender // secondary
+        new Colour("#fffaee") // islandSpice // surface
     );
     public new DemoMode DemoMode => new DemoMode.Disabled();
     public new IEnumerable<string> IgnoredValidationIssues => [
@@ -43,12 +43,13 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         var lightBlue = new Colour("#d0f0ff");
         var darkLightBlue = new Colour("b3e9ee");
         var purple = new Colour("#d6e2ff");
-        var darkPurple = new Colour("#b9b8ff");
+        var darkPurple = new Colour("#622F53");
         
         // And some others
-        var darkDarkGreen = new Colour("#73A043");
+        var darkDarkGreen = new Colour("#425614");
         var darkDarkPurple = new Colour("#8D8BFA");
         var salmon = new Colour(236, 129, 108, Colour.VeryDarkGrey);
+
         // our colors
         var peachFuzz = new Colour("#ffbe98");
         var apricotNectar = new Colour("#ecaa79");
@@ -73,6 +74,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
             new Section.TodoListSummary(new SectionTheme(apricotNectar, Colour.White, new BoxStyle(BoxType.FilledRounded, new SectionTheme(Colours.PrimaryBackground, Colour.White, null)))),
             new Section.HowWeMet(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.Timeline(new SectionTheme(bricks, Colours.Primary, outlinedBox), true),
+            // new Section.Timeline(new SectionTheme(bricks, darkPurple, outlinedBox), true),
             new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkGreen, null)))),
             new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
             new Section.TravelDirections(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox)),
