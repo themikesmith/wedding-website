@@ -25,12 +25,22 @@ public interface IWebsiteConfig
     /// The buttons to display on the top of the homepage e.g. "RSPV".
     /// </summary>
     public TopButtonsConfig TopButtons { get; }
+
+    /// <summary>
+    /// the buttons to display in the gallery
+    /// </summary>
+    public GalleryButtonsConfig GalleryButtons { get; }
     
     /// <summary>
     /// The options to display in the navbar at the top of every page. These are all aligned to the left - the ones
     /// aligned to the right relate to account management and are not configurable.
     /// </summary>
     public NavbarConfig Navbar { get; }
+    
+    /// <summary>
+    /// the buttons to display in the dress code
+    /// </summary>
+    public DressCodeButtonsConfig DressCodeButtons { get; }
     
     /// <summary>
     /// If false, shows "GROOM and BRIDE". If true, shows "BRIDE and GROOM".

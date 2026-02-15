@@ -4,22 +4,37 @@
 @using WeddingWebsite.Components.WeddingComponents
 @using WeddingWebsite.Models.ConfigInterfaces
 @using WeddingWebsite.Models.People
+@using WeddingWebsite.Models.WebsiteConfig
+@using WeddingWebsite.Models.Theme
 
 @inject IWeddingDetails WeddingDetails
 @inject IStringProvider StringProvider
+@inject IWebsiteConfig Config
 
 <Section>
     @if (WrapInBox)
     {
-        <Box Horizontal="true">
+        <Box Horizontal="true" CustomCss="margin-bottom: 20px">
             <TopContent>
-                <WebsiteElement Element="WeddingDetails.DressCode.Media" Cover="true" MaxHeight="300px"/>
+                <WebsiteElement Element="WeddingDetails.DressCode.Media" Cover="true" MaxHeight="350px"/>
             </TopContent>
             <ChildContent>
                 <h2>@StringProvider.DressCode</h2>
                 <DressCode Dress="WeddingDetails.DressCode" Contact="Contact"/>
             </ChildContent>
         </Box>
+        
+        <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
+        <div class="dresscode-buttons" style="text-align: center;">
+            <span style="margin-left: @buttonSpacing"></span>
+            @foreach (var button in Config.DressCodeButtons.Buttons)
+            {
+                <GrowingLinkButton Data="button"/>
+                <span style="margin-left: @buttonSpacing"></span>
+            }
+        </div>
+    </CascadingValue>
+    
     }
     else
     {
@@ -34,6 +49,17 @@
                 <DressCode Dress="WeddingDetails.DressCode" Contact="Contact"/>
             </RightContent>
         </SideBySide>
+        <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
+        <div class="dresscode-buttons" style="text-align: center;">
+            <span style="margin-left: @buttonSpacing"></span>
+            @foreach (var button in Config.DressCodeButtons.Buttons)
+            {
+                <p></p>
+                <GrowingLinkButton Data="button"/>
+                <span style="margin-left: @buttonSpacing"></span>
+            }
+        </div>
+    </CascadingValue>
     }
 </Section>
 
@@ -41,6 +67,8 @@
     [Parameter] public required bool WrapInBox { get; set; }
     
     [Parameter] public required bool ShowContact { get; set; }
+    
+    string buttonSpacing = "10px";
 
     private IContact? Contact => !ShowContact ? null : 
         WeddingDetails.Contacts.FirstOrDefault(c => c.ContactDetails.NotUrgent.MatchesReason(ContactReason.DressCode))

@@ -77,6 +77,21 @@ public class DemoConfig : DefaultConfig, IWebsiteConfig
             yellow
         );
 
+        GalleryButtons = new GalleryButtonsConfig(
+            [
+                new LinkButton("View More!", "/gallery"),
+            ],
+            yellow
+        );
+        
+        DressCodeButtons = new DressCodeButtonsConfig(
+            [
+                new LinkButton("Men - see here for ideas!", ""),
+                new LinkButton("Women - see here for ideas!", ""),
+            ],
+            yellow
+        );
+
         Navbar = new NavbarConfig(
             [
                 new LinkButton("Home", "/"),

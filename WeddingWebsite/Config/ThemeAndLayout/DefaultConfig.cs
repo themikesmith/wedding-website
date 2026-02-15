@@ -15,6 +15,8 @@ public class DefaultConfig : IWebsiteConfig
     );
     public IReadOnlyList<Section> Sections { get; protected set; }
     public TopButtonsConfig TopButtons { get; protected set; }
+    public GalleryButtonsConfig GalleryButtons { get; protected set; }
+    public DressCodeButtonsConfig DressCodeButtons { get; protected set; }
     public NavbarConfig Navbar { get; protected set; }
     public bool BrideFirst => false;
     public bool DateDayBeforeMonth => true;
@@ -45,6 +47,21 @@ public class DefaultConfig : IWebsiteConfig
         TopButtons = new TopButtonsConfig(
             [
                 new LinkButton("RSVP", "/rsvp")
+            ],
+            Colours.Secondary
+        );
+        
+         GalleryButtons = new GalleryButtonsConfig(
+            [
+                new LinkButton("View More!", "/gallery")
+            ],
+            Colours.Secondary
+        );
+        
+        DressCodeButtons = new DressCodeButtonsConfig(
+            [
+                new LinkButton("Men - see here for ideas!", ""),
+                new LinkButton("Women - see here for ideas!", ""),
             ],
             Colours.Secondary
         );

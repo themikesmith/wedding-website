@@ -1,13 +1,17 @@
 ﻿@using WeddingWebsite.Components.Sections
 @using WeddingWebsite.Models.ConfigInterfaces
 @using WeddingWebsite.Models.Gallery
+@using WeddingWebsite.Models.Theme
+@using WeddingWebsite.Models.WebsiteConfig
+@using WeddingWebsite.Components.Elements
 
 @inject IWeddingDetails WeddingDetails
 @inject IStringProvider StringProvider
+@inject IWebsiteConfig Config
 
 @if (!WeddingDetails.Gallery.Favourites.Any()) return;
 
-<Section>
+<Section Id='gallery'>
     <SectionHeading>@StringProvider.Gallery</SectionHeading>
     <MudCarousel TData="BigGalleryItem" ItemsSource="WeddingDetails.Gallery.Favourites" Style="@CarouselCss" AutoCycle="true" ShowArrows="true" @bind-SelectedIndex="CurrentIndex" EnableSwipeGesture="false">
         <ItemTemplate>
@@ -33,6 +37,22 @@
             </div>
         </ItemTemplate>
     </MudCarousel>
+
+       <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.GalleryButtons.Colour ?? Config.Colours.Secondary, null))">
+        <div class="gallery-buttons" style="text-align: center;">
+            @code {
+                string buttonSpacing = "10px";
+            }
+            <span style="margin-left: @buttonSpacing"></span>
+            @foreach (var button in Config.GalleryButtons.Buttons)
+            {
+                <p></p>
+                <GrowingLinkButton Data="button"/>
+                <span style="margin-left: @buttonSpacing"></span>
+            }
+        </div>
+    </CascadingValue>
+
 </Section>
 
 <style>
