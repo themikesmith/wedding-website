@@ -74,7 +74,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
             new Section.HowWeMet(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             new Section.Timeline(new SectionTheme(bricks, Colours.Primary, outlinedBox), true),
             new Section.VenueShowcase(new SectionTheme(apricotNectar, Colours.Primary, new BoxStyle(BoxType.FilledRounded, new SectionTheme(pastelLilac, darkDarkGreen, null)))),
-            // new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
+            new Section.MeetWeddingParty(new SectionTheme(flowers, Colours.Primary, outlinedBox)),
             new Section.TravelDirections(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox)),
             new Section.Accommodation(new SectionTheme(peachFuzz, Colours.Primary, filledBox)),
             // new Section.SimpleTimeline(new SectionTheme(flowers2, Colours.Primary, filledBox)),
@@ -91,14 +91,31 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
             yellow
         );
 
+        GalleryButtons = new GalleryButtonsConfig(
+            [
+                new LinkButton("View More!", "/gallery"),
+            ],
+            yellow
+        );
+        
+        
+        DressCodeButtons = new DressCodeButtonsConfig(
+            [
+                new LinkButton("Men - see here for ideas!", "https://www.dapperconfidential.com/mens-summer-cocktail-attire/"),
+                new LinkButton("Women - see here for ideas!", "https://www.adriannapapell.com/blogs/inspiration/coastal-cocktail-dress-ideas"),
+            ],
+            subtleBlue
+        );
+
         Navbar = new NavbarConfig(
             [
                 new LinkButton("Home", "/"),
-                new LinkButton("Timeline & Transport", "/#timeline"),
+                new LinkButton("Timeline & Getting There", "/#timeline"),
                 new LinkButton("Accommodation", "/#accommodation"),
-                new LinkButton("Registry", "/registry"),
-                new LinkButton("Gallery", "/gallery"),
-                new LinkButton("Contact", "/#contact")
+                new LinkButton("Gallery", "/#gallery"),
+                new LinkButton("Contact", "/#contact"),
+                new LinkButton("Registry Page", "/registry"),
+                new LinkButton("More Photos", "/gallery")
             ]
         );
 
