@@ -52,6 +52,12 @@ public enum Role
     
     [Description("Venue Coordinator")]
     VenueCoordinator,
+
+    [Description("Wedding Planner")]
+    WeddingPlanner,
+
+    [Description("Dog of Honor")]
+    DogOfHonor,
     
     [Description("Guest")]
     NormalGuest,
