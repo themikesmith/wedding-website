@@ -208,7 +208,7 @@
         return new WeddingModal(
             someEmphasised ? "Other Options" : "Suggested Hotels",
             hotels.Select(hotel => new WebsiteSection(
-                hotel.Name + " (£" + hotel.ApproximatePrice.DiscountedPrice + ")",
+                hotel.Name + " (" + hotel.ApproximatePrice.DiscountedPrice + ")",
                 [
                     "",
                     hotel.Description,
