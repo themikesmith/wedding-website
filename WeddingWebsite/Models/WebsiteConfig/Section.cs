@@ -45,7 +45,7 @@ public abstract record Section
     ) : Section(Theme)
     {
         public MeetWeddingParty(SectionTheme? theme = null, MeetWeddingPartyDisplay displayMode = MeetWeddingPartyDisplay.TwoColumns) 
-            : this(theme, [Role.Groom, Role.BestMan, Role.Groomsman], [Role.Bride, Role.MaidOfHonour, Role.Bridesmaid], displayMode) {}
+            : this(theme, [Role.Groom, Role.BestMan, Role.Groomsman, Role.DogOfHonor], [Role.Bride, Role.MaidOfHonour, Role.Bridesmaid, Role.WeddingPlanner], displayMode) {}
     }
     
     /// <summary>
