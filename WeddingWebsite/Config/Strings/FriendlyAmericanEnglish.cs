@@ -10,6 +10,8 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
 {
     public new String VenueShowcase => "Explore & Stay";
     public new String OrderOfTheDay => "Order of the Weekend";
+    public override string CurrencySymbol => "$";
+    // public override string CurrencyAmount(decimal amount)=> $"{CurrencySymbol}{amount:F2}";
 
     public new string ContactUsEnterCategory => "What is your inquiry about?";
     public new string CategoryOfEnquiry => "Category of Inquiry";
@@ -17,7 +19,7 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
 
     public new string AccountSharedWithGuests(int guestCount) =>  $"This account is shared between {guestCount} guest{(guestCount != 1 ? "s" : "")}. Feel free to share your login details amongst all the guests tied to this account (they won't be able to access the website otherwise).";
     
-    public new string RegistryDescription1 => "Please do not feel under any pressure to give a gift - there is no obligation at all to do so! However, if you would like to give a gift, this page contains some suggestions of things we'd like. If you'd prefer to give something else, that's fine too!";
+    public new string RegistryDescription1 => "Your attendance at our wedding is the greatest gift of all, so don't feel pressured to bring anything. However, if you're looking for wedding gift ideas, this page contains some suggestions of things we'd like. Alternatively, we will be posting charities soon where you can make a donation in our names.";
     public new string RegistryDescription2 => "You can click on an item to view more information about it. Once you've decided to purchase it, please claim it so that we don't get multiple people buying the same thing!";
     
     public new string DoNotPurchaseBeforeClaiming => "Please do not make a purchase before claiming the item first - this will reserve it so we don't get two people buying the same thing!";
