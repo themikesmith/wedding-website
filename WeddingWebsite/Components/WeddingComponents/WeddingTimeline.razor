@@ -126,7 +126,7 @@
             type : TimelineItemType.VenueChange,
             date : ev.Date.ToShortDateString(),
             time : previousEndTime?.ToShortTimeString() ?? "Start",
-            title : "Transport",
+            title : "Getting There",
             description : ev.Venue.Directions!.Description,
             venueName : previousVenueName != null ? previousVenueName + " → " + ev.Venue.Name : "Your House → " + ev.Venue.Name,
             locationWithinVenue: null,
