@@ -24,6 +24,7 @@ public class DefaultConfig : IWebsiteConfig
     public PageConfig.Registry RegistryConfig { get; set; }
     public PageConfig.RegistryItem RegistryItemConfig { get; set; }
     public PageConfig.Login LoginConfig { get; set; }
+    public PageConfig.Rsvp RsvpConfig { get; init; }
     public DemoMode DemoMode => new DemoMode.Disabled();
     public IEnumerable<string> IgnoredValidationIssues => [];
 
@@ -77,6 +78,7 @@ public class DefaultConfig : IWebsiteConfig
         );
 
         AccountConfig = new PageConfig.Account(new SectionTheme(Colours.PrimaryBackground.WithAlpha(150), Colours.Secondary, filledBox));
+        RsvpConfig = new PageConfig.Rsvp(AccountConfig.Theme);
         RegistryConfig = new PageConfig.Registry(new SectionTheme(Colours.Surface, Colours.Primary, outlinedBox));
         RegistryItemConfig = new PageConfig.RegistryItem(new SectionTheme(Colours.Surface, Colours.Primary, filledBox));
         LoginConfig = new PageConfig.Login(new SectionTheme(Colours.PrimaryBackground, Colours.Primary, filledBox));
