@@ -37,7 +37,7 @@
             } else if (question.QuestionType is RsvpQuestionType.Select select)
             {
                 var currentValue = Answers[select.DataColumn.Id];
-                <MudRadioGroup Disabled="ReadOnly" T="string" Value="@currentValue" ValueChanged="newVal => Answers[select.DataColumn.Id] = newVal" Row="true" aria-required="@question.Required">
+                <MudRadioGroup Disabled="ReadOnly" T="string" Value="@currentValue" ValueChanged="newVal => Answers[select.DataColumn.Id] = newVal" aria-required="@question.Required">
                     @foreach (var option in select.Options)
                     {
                         <MudRadio T="string" Value="option" Color="Color.Primary">@option</MudRadio>
