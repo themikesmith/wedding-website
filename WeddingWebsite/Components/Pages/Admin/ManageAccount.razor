@@ -298,7 +298,7 @@
         var name = NewGuestName.Split(" ");
         var firstName = name.First();
         var lastName = name.Length > 1 ? string.Join(" ", name.Skip(1)) : "";
-        AdminService.AddGuestToAccount(Account.Id, firstName, lastName);
+        AdminService.AddGuestToAccount(Account.Id, firstName, lastName, RsvpStatus.NotResponded);
         Guests = AdminService.GetGuestsForAccount(Account.Id);
         NewGuestName = "";
         if (LoggedInUser is null) return;

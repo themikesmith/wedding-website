@@ -5,7 +5,7 @@ namespace WeddingWebsite.Services;
 
 public interface IAdminService
 {
-    void AddGuestToAccount(string userId, string firstName, string lastName);
+    void AddGuestToAccount(string userId, string firstName, string lastName, RsvpStatus rsvpStatus);
     IEnumerable<AccountWithGuests> GetAllAccounts();
     IEnumerable<GuestWithId> GetGuestsForAccount(string userId);
     Guest? GetGuest(string userId, string guestId);

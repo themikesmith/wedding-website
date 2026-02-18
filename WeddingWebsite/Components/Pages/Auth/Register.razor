@@ -11,6 +11,7 @@
 @using WeddingWebsite.Core
 @using WeddingWebsite.Data
 @using WeddingWebsite.Services
+@using WeddingWebsite.Models.Accounts
 
 @inject UserManager<Account> UserManager
 @inject IUserStore<Account> UserStore
@@ -137,7 +138,7 @@
             var names = guestName.Split(' ', 2);
             var firstName = names[0];
             var lastName = names.Length > 1 ? names[1] : "";
-            AdminService.AddGuestToAccount(user.Id, firstName, lastName);
+            AdminService.AddGuestToAccount(user.Id, firstName, lastName, RsvpStatus.NotResponded);
         }
         
         NavigationManager.Refresh(true);

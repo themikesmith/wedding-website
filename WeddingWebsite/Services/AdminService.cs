@@ -8,9 +8,9 @@ namespace WeddingWebsite.Services;
 [Authorize (Roles = "Admin")]
 public class AdminService(IStore store) : IAdminService
 {
-    public void AddGuestToAccount(string userId, string firstName, string lastName)
+    public void AddGuestToAccount(string userId, string firstName, string lastName, RsvpStatus rsvpStatus = RsvpStatus.NotResponded)
     {
-        store.AddGuestToAccount(userId, firstName, lastName);
+        store.AddGuestToAccount(userId, firstName, lastName, rsvpStatus);
     }
 
     public IEnumerable<AccountWithGuests> GetAllAccounts()

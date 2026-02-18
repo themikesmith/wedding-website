@@ -14,7 +14,7 @@ public interface IStore
     /// <summary>
     /// Adds a new guest to the specified user's account. Restricted to Admin users.
     /// </summary>
-    public void AddGuestToAccount(string userId, string firstName, string lastName);
+    public void AddGuestToAccount(string userId, string firstName, string lastName, RsvpStatus rsvpStatus);
 
     /// <summary>
     /// Retrieves all registered accounts along with their guests.

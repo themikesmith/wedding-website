@@ -27,7 +27,7 @@ public class RsvpService(IRsvpStore rsvpStore) : IRsvpService
             var dataByQuestion = new Dictionary<string, string>();
             foreach (var question in questions.Questions)
             {
-                var value = question.QuestionType.GetAnswerString(rsvp.Data);
+                var value = question.QuestionType.GetAnswerString(rsvp.Data) ?? "<null>";
                 dataByQuestion[question.Title] = value;
             }
             return new RsvpResponse(rsvp.GuestId, rsvp.GuestName, rsvp.IsAttending, dataByColumn, dataByQuestion);
