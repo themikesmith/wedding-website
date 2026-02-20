@@ -26,12 +26,16 @@
         
         <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
         <div class="dresscode-buttons" style="text-align: center;">
+            <div>
             <span style="margin-left: @buttonSpacing"></span>
             @foreach (var button in Config.DressCodeButtons.Buttons)
             {
+                <p></p>
                 <GrowingLinkButton Data="button"/>
+                <p></p>
                 <span style="margin-left: @buttonSpacing"></span>
             }
+            </div>
         </div>
     </CascadingValue>
     
@@ -56,6 +60,7 @@
             {
                 <p></p>
                 <GrowingLinkButton Data="button"/>
+                <p></p>
                 <span style="margin-left: @buttonSpacing"></span>
             }
         </div>
