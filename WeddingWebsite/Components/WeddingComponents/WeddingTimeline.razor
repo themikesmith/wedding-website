@@ -102,7 +102,7 @@
             (
                 TimelineItemType.Event,
                 ev.Date.ToShortDateString(),
-                ev.Start.ToShortTimeString(),
+                ev.Start.ToString("hh:mm tt"),
                 ev.Name,
                 "",
                 ev.Venue.Name,
@@ -125,7 +125,7 @@
         return new TimelineItem (
             type : TimelineItemType.VenueChange,
             date : ev.Date.ToShortDateString(),
-            time : previousEndTime?.ToShortTimeString() ?? "Start",
+            time : previousEndTime?.ToString("hh:mm tt") ?? "Start",
             title : "Getting There",
             description : ev.Venue.Directions!.Description,
             venueName : previousVenueName != null ? previousVenueName + " → " + ev.Venue.Name : "Your House → " + ev.Venue.Name,
@@ -156,7 +156,7 @@
         return new TimelineItem(
             TimelineItemType.Accommodation,
             Events.LastOrDefault()?.Date.ToString(),
-            Events.LastOrDefault()?.End.ToString() ?? "End",
+            Events.LastOrDefault()?.End?.ToString("hh:mm tt") ?? "End",
             "Accommodation",
             AccommodationDetails.Description ?? "If you would like to book accommodation, here are some recommendations",
             GenerateAccommodationShortString(),
