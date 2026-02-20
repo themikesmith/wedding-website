@@ -11,6 +11,7 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
     public new String VenueShowcase => "Explore & Stay";
     public new String OrderOfTheDay => "Order of the Weekend";
     public override string CurrencySymbol => "$";
+    public override string MeetTheWeddingParty => "Meet the Bride and Groom";
     // public override string CurrencyAmount(decimal amount)=> $"{CurrencySymbol}{amount:F2}";
 
     public new string ContactUsEnterCategory => "What is your inquiry about?";

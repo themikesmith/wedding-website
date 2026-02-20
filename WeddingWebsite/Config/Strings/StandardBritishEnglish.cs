@@ -79,7 +79,7 @@ public class StandardBritishEnglish : IStringProvider
 
     public string HowWeMet => "How We Met";
 
-    public string MeetTheWeddingParty => "Meet the Wedding Party";
+    public virtual string MeetTheWeddingParty => "Meet the Wedding Party";
 
     public string OrderOfTheDay => "Order of the Day";
 
