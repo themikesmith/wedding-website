@@ -20,6 +20,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
         new Colour("#fffaee") // islandSpice // surface
     );
     public new DemoMode DemoMode => new DemoMode.Disabled();
+    public new bool ChangingPasswordEnabled => false;
     public new IEnumerable<string> IgnoredValidationIssues => [
         "You have both a Timeline and SimpleTimeline section. Since both sections display the same information, choose the level of detail you want and remove the other section."
     ];

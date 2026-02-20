@@ -26,6 +26,7 @@ public class DefaultConfig : IWebsiteConfig
     public PageConfig.Login LoginConfig { get; set; }
     public PageConfig.Rsvp RsvpConfig { get; init; }
     public DemoMode DemoMode => new DemoMode.Disabled();
+    public bool ChangingPasswordEnabled => true;
     public IEnumerable<string> IgnoredValidationIssues => [];
 
     // Default config will enable all optional features.

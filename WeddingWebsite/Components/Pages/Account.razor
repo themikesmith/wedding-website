@@ -180,6 +180,11 @@
             ErrorText = "Changing password is not permitted in demo mode.";
             return;
         }
+        if (!Config.ChangingPasswordEnabled)
+        {
+            ErrorText = "Changing password is not enabled.";
+            return;
+        }
         
         var account = UserManager.FindByNameAsync(UserName).Result;
         if (account == null)

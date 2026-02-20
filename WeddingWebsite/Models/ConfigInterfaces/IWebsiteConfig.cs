@@ -47,6 +47,7 @@ public interface IWebsiteConfig
     /// </summary>
     public bool BrideFirst { get; }
     public bool DateDayBeforeMonth { get; }
+    public bool ChangingPasswordEnabled { get; }
     
     /// <summary>
     /// Config for the "My Account" page.
