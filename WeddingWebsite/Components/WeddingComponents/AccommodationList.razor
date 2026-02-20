@@ -11,20 +11,18 @@
     <thead>
     <tr>
         <th>@StringProvider.Name</th>
-        <th>@StringProvider.Distance</th>
         <th>@StringProvider.Price</th>
-        <th>@StringProvider.Link</th>
+        <th>@StringProvider.Distance</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var hotel in Hotels) {
         <tr>
-            <td>@hotel.Name</td>
-            <td>@StringProvider.NumMinutesShort(hotel.DrivingTimeFromVenueMinutes)</td>
-            <td>@hotel.ApproximatePrice</td>
             <td>
-                <LinkButton Url="@hotel.Link" Variant="ButtonVariant.Outlined">@StringProvider.VisitWebsite</LinkButton>
+                <LinkButton Url="@hotel.Link" Variant="ButtonVariant.Outlined">@hotel.Name</LinkButton>
             </td>
+            <td>@hotel.ApproximatePrice</td>
+            <td>@StringProvider.NumMinutesShort(hotel.DrivingTimeFromVenueMinutes)</td>
         </tr>
     }
     </tbody>
