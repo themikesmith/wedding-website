@@ -116,6 +116,7 @@ public class TestConfig : DefaultConfig, IWebsiteConfig
                 new LinkButton("Accommodation", "/#accommodation"),
                 new LinkButton("Gallery", "/#gallery"),
                 new LinkButton("Contact", "/#contact"),
+                new LinkButton("RSVP", "/rsvp"),
                 new LinkButton("Registry Page", "/registry"),
                 new LinkButton("More Photos", "/gallery")
             ]
