@@ -51,7 +51,7 @@ public class StandardBritishEnglish : IStringProvider
     
     public string Home => "Home";
     
-    public string Accommodation => "Accommodation";
+    public virtual string Accommodation => "Accommodation";
     public string Address => "Address";
     public string Distance => "Distance";
     public string DriveFromVenue(int minutes) => $"{minutes} min drive from the venue.";

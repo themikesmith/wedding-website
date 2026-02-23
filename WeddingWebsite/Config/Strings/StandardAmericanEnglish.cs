@@ -9,4 +9,5 @@ namespace WeddingWebsite.Config.Strings;
 public class StandardAmericanEnglish : StandardBritishEnglish, IStringProvider
 {
     public override string CurrencySymbol => "$";
+    public override string Accommodation => "Accommodations";
 }
