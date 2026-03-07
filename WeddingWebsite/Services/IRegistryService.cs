@@ -10,7 +10,7 @@ public interface IRegistryService
     bool DeleteItem(string itemId);
     RegistryItem? GetRegistryItemById(string itemId);
     Task<IEnumerable<RegistryItem>> GetAllRegistryItems(bool includeHidden = false);
-    bool ClaimRegistryItem(string itemId, string userId, int quantity = 1);
+    bool ClaimRegistryItem(string itemId, string userId, decimal contribution, int quantity = 1);
     bool UnclaimRegistryItem(string itemId, string userId);
     void ChoosePurchaseMethod(string itemId, string userId, string? purchaseMethodId);
     void ChooseDeliveryAddress(string itemId, string userId, string? address);

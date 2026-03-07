@@ -16,13 +16,20 @@
             <p class="generic-name">@Item.GenericName</p>
             <h2>@Item.Name</h2>
             <div class="cost-and-button">
-                @if (Item.PurchaseMethods.Any())
+                @if (Item.AllowsPartialContributions)
                 {
-                    <p class="cost">@StringProvider.CurrencyAmount(Item.CheapestCost)</p>
+                        <p class="cost">@StringProvider.CurrencyAmount(Item.ClaimedAmount) contributed</p>
                 }
                 else
                 {
-                    <p class="cost"></p>
+                    @if (Item.PurchaseMethods.Any())
+                    {
+                        <p class="cost">@StringProvider.CurrencyAmount(Item.CheapestCost)</p>
+                    }
+                    else
+                    {
+                        <p class="cost"></p>
+                    }            
                 }
                 <button style="background: @ButtonColour">@ButtonText</button>
             </div>

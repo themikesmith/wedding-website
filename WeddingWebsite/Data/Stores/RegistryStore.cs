@@ -20,8 +20,8 @@ public class RegistryStore : IRegistryStore
         var cmd = connection.CreateCommand();
         cmd.Transaction = transaction;
         cmd.CommandText = @"
-            INSERT INTO RegistryItems (Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide)
-            VALUES (:id, :genericName, :name, :description, :imageUrl, :maxQuantity, :priority, :hide);
+            INSERT INTO RegistryItems (Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions)
+            VALUES (:id, :genericName, :name, :description, :imageUrl, :maxQuantity, :priority, :hide, :allowsPartialContributions);
         ";
         cmd.Parameters.AddWithValue(":id", item.Id);
         cmd.Parameters.AddWithValue(":genericName", item.GenericName);
@@ -31,6 +31,7 @@ public class RegistryStore : IRegistryStore
         cmd.Parameters.AddWithValue(":maxQuantity", item.MaxQuantity);
         cmd.Parameters.AddWithValue(":priority", item.Priority);
         cmd.Parameters.AddWithValue(":hide", item.Hide ? 1 : 0);
+        cmd.Parameters.AddWithValue(":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
 
         cmd.ExecuteNonQuery();
 
@@ -83,7 +84,8 @@ public class RegistryStore : IRegistryStore
                 ImageUrl = :imageUrl,
                 MaxQuantity = :maxQuantity,
                 Priority = :priority,
-                Hide = :hide
+                Hide = :hide,
+                AllowsPartialContributions = :allowsPartialContributions
             WHERE Id = :id;
         ";
         cmd.Parameters.AddWithValue(":id", item.Id);
@@ -94,6 +96,7 @@ public class RegistryStore : IRegistryStore
         cmd.Parameters.AddWithValue(":maxQuantity", item.MaxQuantity);
         cmd.Parameters.AddWithValue(":priority", item.Priority);
         cmd.Parameters.AddWithValue(":hide", item.Hide ? 1 : 0);
+        cmd.Parameters.AddWithValue(":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
 
         var rowsAffected = cmd.ExecuteNonQuery();
         if (rowsAffected == 0)
@@ -218,7 +221,7 @@ public class RegistryStore : IRegistryStore
 
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide
+            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions
             FROM RegistryItems
             WHERE Id = :id;
         ";
@@ -238,6 +241,7 @@ public class RegistryStore : IRegistryStore
         var maxQuantity = reader.GetInt32(5);
         var priority = reader.GetInt32(6);
         var hide = reader.GetBoolean(7);
+        var allowsPartialContributions = reader.GetBoolean(8);
 
         var purchaseMethods = GetPurchaseMethodsForItem(id, connection);
         var claims = GetClaimsForItem(id, connection);
@@ -252,7 +256,8 @@ public class RegistryStore : IRegistryStore
             claims,
             maxQuantity,
             priority,
-            hide
+            hide,
+            allowsPartialContributions
         );
     }
 
@@ -293,7 +298,7 @@ public class RegistryStore : IRegistryStore
 
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes
+            SELECT ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes, Contribution
             FROM RegistryItemClaims
             WHERE ItemId = :itemId;
         ";
@@ -310,7 +315,8 @@ public class RegistryStore : IRegistryStore
                 new DateTime(reader.GetInt64(4), DateTimeKind.Utc),
                 reader.IsDBNull(5) ? null : new DateTime(reader.GetInt64(5), DateTimeKind.Utc),
                 reader.GetInt32(6),
-                reader.IsDBNull(7) ? null : reader.GetString(7)
+                reader.IsDBNull(7) ? null : reader.GetString(7),
+                reader.GetDecimal(8)
             );
             claims.Add(claim);
         }
@@ -327,7 +333,7 @@ public class RegistryStore : IRegistryStore
 
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide
+            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions
             FROM RegistryItems
             " + (includeHidden ? "" : "WHERE Hide = 0 ") + @"
             ORDER BY Priority DESC, Name ASC;
@@ -344,6 +350,7 @@ public class RegistryStore : IRegistryStore
             var maxQuantity = reader.GetInt32(5);
             var priority = reader.GetInt32(6);
             var hide = reader.GetBoolean(7);
+            var allowsPartialContributions = reader.GetBoolean(8);
 
             var purchaseMethods = GetPurchaseMethodsForItem(id, connection);
             var claims = GetClaimsForItem(id, connection);
@@ -358,7 +365,8 @@ public class RegistryStore : IRegistryStore
                 claims,
                 maxQuantity,
                 priority,
-                hide
+                hide,
+                allowsPartialContributions
             );
             items.Add(item);
         }
@@ -366,7 +374,7 @@ public class RegistryStore : IRegistryStore
         return items;
     }
     
-    public bool ClaimRegistryItem(string itemId, string userId, int quantity = 1)
+    public bool ClaimRegistryItem(string itemId, string userId, decimal contribution, int quantity = 1)
     {
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
@@ -408,19 +416,22 @@ public class RegistryStore : IRegistryStore
             return false; // Exceeds max quantity
         }
 
+        // TODO check contribution exceeds total?
+
         // Add the claim
         var claimCmd = connection.CreateCommand();
         claimCmd.Transaction = transaction;
         claimCmd.CommandText = @"
             INSERT INTO RegistryItemClaims
-            (ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes)
+            (ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes, Contribution)
             VALUES
-            (:itemId, :claimedBy, NULL, NULL, :claimedAt, NULL, :quantity, NULL);
+            (:itemId, :claimedBy, NULL, NULL, :claimedAt, NULL, :quantity, NULL, :contribution);
         ";
         claimCmd.Parameters.AddWithValue(":itemId", itemId);
         claimCmd.Parameters.AddWithValue(":claimedBy", userId);
         claimCmd.Parameters.AddWithValue(":claimedAt", DateTime.UtcNow.Ticks);
         claimCmd.Parameters.AddWithValue(":quantity", quantity);
+        claimCmd.Parameters.AddWithValue(":contribution", contribution);
 
         claimCmd.ExecuteNonQuery();
 

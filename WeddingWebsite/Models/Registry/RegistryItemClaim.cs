@@ -8,7 +8,8 @@ public record RegistryItemClaim(
     DateTime ClaimedAt,
     DateTime? CompletedAt,
     int Quantity,
-    string? Notes
+    string? Notes,
+    decimal Contribution
 )
 {
     public bool IsCompleted => CompletedAt != null;

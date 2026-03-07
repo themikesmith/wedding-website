@@ -141,6 +141,7 @@ public class StandardBritishEnglish : IStringProvider
     public string ClaimThisItem => "Claim this Item";
     public string ClaimThisItemDescription => "If you'd like to kindly buy this item for us, please press claim. You can unclaim it later if you change your mind.";
     public string Quantity => "Quantity";
+    public string Contribution => "Contribution";
     public string Claim => "Claim";
     
     public string RegistryInactiveDescription(string description) => $"The registry is {description}.";

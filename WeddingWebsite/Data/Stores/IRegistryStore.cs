@@ -34,7 +34,7 @@ public interface IRegistryStore
     /// Registers a claim on the given item by the given purchaser. Returns false if the number of claims would exceed
     /// the max quantity. Throws if the item does not exist.
     /// </summary>
-    bool ClaimRegistryItem(string itemId, string userId, int quantity = 1);
+    bool ClaimRegistryItem(string itemId, string userId, decimal contribution, int quantity = 1);
     
     /// <summary>
     /// Removes the claim on the given item by the given purchaser. This may include a quantity greater than one.

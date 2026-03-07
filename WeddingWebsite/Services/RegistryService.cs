@@ -20,7 +20,7 @@ public class RegistryService(IRegistryStore registryStore) : IRegistryService
     
     public Task<IEnumerable<RegistryItem>> GetAllRegistryItems(bool includeHidden = false) => registryStore.GetAllRegistryItems(includeHidden);
     
-    public bool ClaimRegistryItem(string itemId, string userId, int quantity = 1) => registryStore.ClaimRegistryItem(itemId, userId, quantity);
+    public bool ClaimRegistryItem(string itemId, string userId, decimal contribution, int quantity = 1) => registryStore.ClaimRegistryItem(itemId, userId, contribution, quantity);
     
     public bool UnclaimRegistryItem(string itemId, string userId) => registryStore.UnclaimRegistryItem(itemId, userId);
     

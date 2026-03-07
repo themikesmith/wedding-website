@@ -55,6 +55,11 @@
         <span class="flex-grow"></span>
         <InputCheckbox id="hide" class="form-check-input" @bind-Value="Model.Hide" />
     </div>
+    <div class="form-input-and-label">
+        <label for="allowsPartialContributions" class="form-label">Allow Partial Contributions</label>
+        <span class="flex-grow"></span>
+        <InputCheckbox id="allowsPartialContributions" class="form-check-input" @bind-Value="Model.AllowsPartialContributions" />
+    </div>
     <h2>Purchase Methods</h2>
     @foreach (var method in Model.PurchaseMethods)
     {
@@ -152,6 +157,7 @@
             Quantity = Item.MaxQuantity,
             Priority = Item.Priority,
             Hide = Item.Hide,
+            AllowsPartialContributions = Item.AllowsPartialContributions,
             PurchaseMethods = Item.PurchaseMethods.Select(pm => new EditRegistryItemModel.PurchaseMethodModel
             {
                 Id = pm.Id,
@@ -184,6 +190,7 @@
             MaxQuantity = Model.Quantity,
             Priority = Model.Priority,
             Hide = Model.Hide,
+            AllowsPartialContributions = Model.AllowsPartialContributions,
             PurchaseMethods = Model.PurchaseMethods.Select(pm => new RegistryItemPurchaseMethod(
                 Id: pm.Id,
                 Name: pm.Name,
@@ -239,6 +246,8 @@
         public int Priority { get; set; }
 
         public bool Hide { get; set; }
+        
+        public bool AllowsPartialContributions { get; set; }
 
         public List<PurchaseMethodModel> PurchaseMethods { get; set; } = new();
 

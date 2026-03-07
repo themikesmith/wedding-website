@@ -67,6 +67,11 @@
         <InputNumber @bind-Value="Input.DeliveryCost" class="form-control" aria-required="true" placeholder="4.99" id="delivery-cost" />
     </div>
     <div class="form-input-and-label">
+        <label for="allowsPartialContributions">Allow Partial Contributions</label>
+        <span class="flex-grow"></span>
+        <InputCheckbox @bind-Value="Input.AllowsPartialContributions" class="form-check-input" id="allow-partial-contributions" />
+    </div>
+    <div class="form-input-and-label">
         <label for="purchase-instructions" class="mr">Purchase Instructions (optional)</label>
         <InputTextArea @bind-Value="Input.PurchaseInstructions" class="form-control flex-grow" placeholder="Any special instructions for purchasing at this store." id="purchase-instructions" />
     </div>
@@ -132,7 +137,11 @@
             Input.Description == "" ? null : Input.Description,
             Input.ImageUrl == "" ? null : Input.ImageUrl,
             new List<RegistryItemPurchaseMethod> { primaryPurchaseMethod }.Concat(moneyTransferPurchaseMethod is not null ? new[] { moneyTransferPurchaseMethod } : Array.Empty<RegistryItemPurchaseMethod>()).ToList(),
-            []
+            [], // claims
+            1, // max quantity
+            0, // priority
+            false, // hide
+            Input.AllowsPartialContributions
         );
         
         RegistryService.AddItem(newItem);
@@ -188,6 +197,9 @@
         [Range(0, 100.00)]
         [Display(Name = "Delivery Cost")]
         public decimal DeliveryCost { get; set; } = 0;
+        
+        [Display(Name = "Allow Partial Contributions")]
+        public bool AllowsPartialContributions { get; set; } = false;
         
         [StringLength(1000)]
         [Display(Name = "Purchase Instructions")]

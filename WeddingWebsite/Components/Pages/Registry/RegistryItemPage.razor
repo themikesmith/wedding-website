@@ -66,6 +66,10 @@
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
                                     <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                    @if (Item.AllowsPartialContributions)
+                                    {
+                                    <p class="purchase-option-cost-remaining">(Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost()))</p>
+                                    }
                                     @if (method.DeliveryCost > 0)
                                     {
                                         <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
@@ -83,6 +87,10 @@
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
                                     <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                    @if (Item.AllowsPartialContributions)
+                                    {
+                                    <p class="purchase-option-cost-remaining">(Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost()))</p>
+                                    }
                                     @if (method.DeliveryCost > 0)
                                     {
                                         <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
@@ -209,6 +217,13 @@
                             <input id="quantity" type="number" min="1" max="@(Item.MaxQuantity - Item.QuantityClaimed)" @bind-value="SelectedQuantity"/>
                         </div>
                     }
+                    @if (Item.AllowsPartialContributions)
+                    {
+                        <div class="contribution-selector">
+                            <label for="contribution">@StringProvider.Contribution:</label>
+                            <input id="Contribution" type="decimal" min="1.00" max="@Item.MaxCost" @bind-value="EnteredContribution"/>
+                        </div>
+                    }
                     <Button OnClick="ClaimItem">@StringProvider.Claim</Button>
                 }
                 <p class="text-danger">@ErrorText</p>
@@ -270,6 +285,7 @@
     private string ErrorText { get; set; } = "";
     private string Notes { get; set; } = "";
     private string? SelectedQuantity { get; set; } = "1";
+    private string? EnteredContribution { get; set; } = "0.00";
     
     private IEnumerable<string> DeliveryAddresses => WeddingDetails.NotablePeople.Where(p => p.Address != null).Select(p => p.Name + ", " + p.Address!);
     public static string DeliveryAddressBringOnDay => "Bring it on the day";
@@ -327,7 +343,25 @@
                 return;
             }
         }
-        var result = RegistryService.ClaimRegistryItem(Item.Id, UserId, quantity);
+        decimal contribution = 0.00M;  // TODO populate
+        if (Item.AllowsPartialContributions)
+        {
+            if (!decimal.TryParse(EnteredContribution, out contribution))
+            {
+                ErrorText = "Please enter a valid contribution amount.";
+                StateHasChanged();
+                return;
+            }
+
+            if (contribution > Item.MaxCost)
+            {
+                ErrorText = $"Please enter a contribution between $0.00 and ${Item.MaxCost}.";  // TODO handle remaining cost
+                StateHasChanged();
+                return;
+            }
+        }
+
+        var result = RegistryService.ClaimRegistryItem(Item.Id, UserId, contribution, quantity);
         if (!result)
         {
             ErrorText = "Sorry, this item has already been claimed by someone else.";

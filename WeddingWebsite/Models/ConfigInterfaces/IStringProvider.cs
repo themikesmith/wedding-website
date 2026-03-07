@@ -144,6 +144,7 @@ public interface IStringProvider
     string ClaimThisItemDescription { get; }
     string Quantity { get; }
     string Claim { get; }
+    string Contribution { get; }
 
     string RegistryInactiveDescription(string description);
     
