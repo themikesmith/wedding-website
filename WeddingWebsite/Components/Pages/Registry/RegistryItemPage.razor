@@ -43,98 +43,101 @@
                 {
                     <p>@StringProvider.QuantityClaimed(Item.QuantityClaimed, Item.MaxQuantity)</p>
                 }
-                <h2>@StringProvider.PurchaseOptions</h2>
-                @if (UserId != null && Item.NumClaimsByUser(UserId) > 0)
+                @if (!Item.IsDonation) 
                 {
-                    if (Item.GetClaimByUser(UserId).PurchaseMethodId == null
-                        || ((Item.GetPurchaseMethodByUser(UserId).AllowDeliverToUs || Item.GetPurchaseMethodByUser(UserId).AllowBringOnDay) && Item.GetClaimByUser(UserId).DeliveryAddress == null))
+                    <h2>@StringProvider.PurchaseOptions</h2>
+                    @if (UserId != null && Item.NumClaimsByUser(UserId) > 0)
                     {
-                        if (! Item.IsDonation) {
-                            <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeDetails</p>
+                        if (Item.GetClaimByUser(UserId).PurchaseMethodId == null
+                            || ((Item.GetPurchaseMethodByUser(UserId).AllowDeliverToUs || Item.GetPurchaseMethodByUser(UserId).AllowBringOnDay) && Item.GetClaimByUser(UserId).DeliveryAddress == null))
+                        {
+                            if (! Item.IsDonation) {
+                                <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeDetails</p>
+                            }
                         }
                     }
-                }
-                else
-                {
-                    @if(Item.AllowsPartialContributions)
-                    {
-                        <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeContributing</p>
-                    }
                     else
                     {
-                        <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeClaiming</p>
+                        @if(Item.AllowsPartialContributions)
+                        {
+                            <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeContributing</p>
+                        }
+                        else
+                        {
+                            <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeClaiming</p>
+                        }
                     }
-                }
-                @foreach (var method in Item.PurchaseMethods)
-                {
-                    @if (method.Url != null)
+                    @foreach (var method in Item.PurchaseMethods)
                     {
-                        <a href="@method.Url" target="_blank" rel="noopener noreferrer" class="purchase-option">
-                            <Box>
-                                <div class="purchase-option-content">
-                                    <p class="purchase-option-name">@method.Name</p>
-                                    <MudSpacer/>
-                                    @if (!Item.IsDonation)
-                                    {
-                                        @if (Item.AllowsPartialContributions)
+                        @if (method.Url != null)
+                        {
+                            <a href="@method.Url" target="_blank" rel="noopener noreferrer" class="purchase-option">
+                                <Box>
+                                    <div class="purchase-option-content">
+                                        <p class="purchase-option-name">@method.Name</p>
+                                        <MudSpacer/>
+                                        @if (!Item.IsDonation)
                                         {
-                                            @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                            @if (Item.AllowsPartialContributions)
                                             {
-                                            <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
-                                            }
-                                            else
-                                            {
-                                                <p class="purchase-option-cost-other">@StringProvider.CurrencyAmount(method.Cost)</p>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
-                                        }
-                                        @if (method.DeliveryCost > 0)
-                                        {
-                                            <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
-                                        }
-                                    }
-                                    <Button>@StringProvider.View</Button>
-                                </div>
-                            </Box>
-                        </a>
-                    }
-                    else
-                    {
-                        <div class="purchase-option">
-                            <Box>
-                                <div class="purchase-option-content">
-                                    <p class="purchase-option-name">@method.Name</p>
-                                    <MudSpacer/>
-                                    @if (!Item.IsDonation)
-                                    {
-                                        @if (Item.AllowsPartialContributions)
-                                        {
-                                            @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
-                                            {
+                                                @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                                {
                                                 <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="purchase-option-cost-other">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                                }
                                             }
                                             else
                                             {
                                                 <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                             }
+                                            @if (method.DeliveryCost > 0)
+                                            {
+                                                <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                            }
                                         }
-                                        else
+                                        <Button>@StringProvider.View</Button>
+                                    </div>
+                                </Box>
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="purchase-option">
+                                <Box>
+                                    <div class="purchase-option-content">
+                                        <p class="purchase-option-name">@method.Name</p>
+                                        <MudSpacer/>
+                                        @if (!Item.IsDonation)
                                         {
-                                            <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                            @if (Item.AllowsPartialContributions)
+                                            {
+                                                @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                                {
+                                                    <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                            }
+                                            @if (method.DeliveryCost > 0)
+                                            {
+                                                <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                            }
                                         }
-                                        @if (method.DeliveryCost > 0)
-                                        {
-                                            <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
-                                        }
-                                    }
-                                </div>
-                            </Box>
-                        </div>
+                                    </div>
+                                </Box>
+                            </div>
+                        }
+                        
                     }
-                    
                 }
                 @if (UserId != null && Item.NumClaimsByUser(UserId) > 0 && Item.GetClaimByUser(UserId).IsCompleted)
                 {
