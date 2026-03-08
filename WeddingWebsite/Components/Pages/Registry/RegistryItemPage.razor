@@ -228,7 +228,7 @@
                     <p class="claim-item-description" style="margin-top: 10px">@StringProvider.UnclaimDescription</p>
                     <Button OnClick="RemoveClaim">@StringProvider.Unclaim</Button>
                     
-                } else if (Item.IsFullyClaimed)
+                } else if (Item.IsFullyClaimed())
                 {
                     <h2>@StringProvider.ItemClaimed</h2>
                     <p>@StringProvider.ItemClaimedDescription</p>
@@ -347,7 +347,7 @@
     private void ClaimItem()
     {
         if (Item == null) return;
-        if (Item.IsFullyClaimed)
+        if (Item.IsFullyClaimed())
         {
             ErrorText = "This item has already been claimed.";
             StateHasChanged();
@@ -389,7 +389,14 @@
 
             if (contribution > Item.MaxCost)
             {
-                ErrorText = $"Please enter a contribution between $0.00 and ${Item.MaxCost}.";  // TODO handle remaining cost
+                ErrorText = $"Please enter a contribution between $0.00 and ${Item.RemainingCost()}.";
+                StateHasChanged();
+                return;
+            }
+
+            if (contribution > Item.RemainingCost())
+            {
+                ErrorText = $"Please enter a contribution between $0.00 and ${Item.RemainingCost()}.";
                 StateHasChanged();
                 return;
             }

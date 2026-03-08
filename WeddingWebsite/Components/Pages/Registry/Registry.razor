@@ -58,7 +58,7 @@
             @foreach (var item in SortedAndFilteredItems.Where(item => UserId == null || item.NumClaimsByUser(UserId) == 0))
             {
                 <div class="gift">
-                    <RegistryItem Item="item" ButtonText="@(item.IsFullyClaimed ? StringProvider.Claimed : StringProvider.Available)" ButtonSuccess="@(!item.IsFullyClaimed)"/>
+                    <RegistryItem Item="item" ButtonText="@(item.IsFullyClaimed() ? StringProvider.Claimed : StringProvider.Available)" ButtonSuccess="@(!item.IsFullyClaimed())"/>
                 </div>
             }
             @if (!SortedAndFilteredItems.Any())
@@ -145,7 +145,7 @@
 
     private bool ItemMatchesFilter(RegistryItem item)
     {
-        if (EnabledFilters.Contains("Unclaimed") && item.IsFullyClaimed)
+        if (EnabledFilters.Contains("Unclaimed") && item.IsFullyClaimed())
         {
             return false;
         }

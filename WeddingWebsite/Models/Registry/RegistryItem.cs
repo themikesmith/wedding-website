@@ -16,9 +16,21 @@ public record RegistryItem(
 {
     public int QuantityClaimed => Claims.Sum(c => c.Quantity);
     public decimal ClaimedAmount => Claims.Sum(c => c.Contribution);
-    public bool IsFullyClaimed => QuantityClaimed >= MaxQuantity;
+    //public bool IsFullyClaimed => QuantityClaimed >= MaxQuantity;
     public decimal CheapestCost => PurchaseMethods.Min(pm => pm.Cost);
     public decimal MaxCost => PurchaseMethods.Max(pm => pm.Cost);
+
+    public bool IsFullyClaimed()
+    {
+        if (AllowsPartialContributions)
+        {
+            return ClaimedAmount >= CheapestCost;
+        }
+        else
+        {
+            return QuantityClaimed >= MaxQuantity;
+        }
+    }
 
     public decimal RemainingCost()
     {

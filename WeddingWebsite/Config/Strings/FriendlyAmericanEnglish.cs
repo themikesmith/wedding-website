@@ -20,8 +20,8 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
 
     public new string AccountSharedWithGuests(int guestCount) =>  $"This account is shared between {guestCount} guest{(guestCount != 1 ? "s" : "")}. Feel free to share your login details amongst all the guests tied to this account (they won't be able to access the website otherwise).";
     
-    public new string RegistryDescription1 => "Your attendance at our wedding is the greatest gift of all, so don't feel pressured to bring anything. However, if you're looking for wedding gift ideas, this page contains some suggestions of things we'd like. Alternatively, we will be posting charities soon where you can make a donation in our names.";
-    public new string RegistryDescription2 => "You can click on an item to view more information about it. Once you've decided to purchase it, please claim it so that we don't get multiple people buying the same thing!";
+    public new string RegistryDescription1 => "Your attendance at our wedding is the greatest gift of all, so don't feel pressured to bring anything. However, if you're looking for wedding gift ideas, this page contains some suggestions of things we'd like. Alternatively, we have posted a link to a charity where you can make a donation in our names.";
+    public new string RegistryDescription2 => "You can click on an item to view more information about it. Once you've decided to purchase it or contribute towards it, please mark it as claimed or enter your contribution, so that we only get one of each and we don't receive too much!";
     
     public new string DoNotPurchaseBeforeClaiming => "Please do not make a purchase before claiming the item first - this will reserve it so we don't get two people buying the same thing!";
     public new string DoNotPurchaseBeforeContributing => "Please do not send money before marking your contribution below first - this will reserve your amount so we don't get extra funds!";

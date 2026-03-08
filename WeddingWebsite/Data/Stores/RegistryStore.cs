@@ -381,22 +381,25 @@ public class RegistryStore : IRegistryStore
 
         using var transaction = connection.BeginTransaction();
 
-        // Check if item exists and get max quantity
-        var itemCmd = connection.CreateCommand();
-        itemCmd.Transaction = transaction;
-        itemCmd.CommandText = @"
-            SELECT MaxQuantity
-            FROM RegistryItems
-            WHERE Id = :id;
-        ";
-        itemCmd.Parameters.AddWithValue(":id", itemId);
-
-        var maxQuantityObj = itemCmd.ExecuteScalar();
-        if (maxQuantityObj == null)
-        {
-            throw new InvalidOperationException($"No registry item found with ID {itemId}");
-        }
-        var maxQuantity = Convert.ToInt32(maxQuantityObj);
+        // // Check if item exists and get max quantity
+        //var itemCmd = connection.CreateCommand();
+        //itemCmd.Transaction = transaction;
+        //itemCmd.CommandText = @"
+        //    SELECT MaxQuantity
+        //    FROM RegistryItems
+        //    WHERE Id = :id;
+        //";
+        //itemCmd.Parameters.AddWithValue(":id", itemId);
+        //
+        //var maxQuantityObj = itemCmd.ExecuteScalar();
+        //if (maxQuantityObj == null)
+        //{
+        //    throw new InvalidOperationException($"No registry item found with ID {itemId}");
+        //}
+        //var maxQuantity = Convert.ToInt32(maxQuantityObj);
+        var item = GetRegistryItemById(itemId);
+        /**
+        var maxQuantity = item.MaxQuantity;
 
         // Check current claimed quantity
         var claimCountCmd = connection.CreateCommand();
@@ -407,16 +410,18 @@ public class RegistryStore : IRegistryStore
             WHERE ItemId = :itemId;
         ";
         claimCountCmd.Parameters.AddWithValue(":itemId", itemId);
-
+        
         var currentClaimedObj = claimCountCmd.ExecuteScalar();
         var currentClaimed = currentClaimedObj == DBNull.Value ? 0 : Convert.ToInt32(currentClaimedObj);
 
-        if (currentClaimed + quantity > maxQuantity)
+        //if (currentClaimed + quantity > maxQuantity)
+        */
+        if (item.IsFullyClaimed())
+        // TODO check contribution exceeds total?
         {
             return false; // Exceeds max quantity
         }
 
-        // TODO check contribution exceeds total?
 
         // Add the claim
         var claimCmd = connection.CreateCommand();
