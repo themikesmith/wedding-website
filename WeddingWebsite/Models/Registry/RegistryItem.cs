@@ -11,7 +11,8 @@ public record RegistryItem(
     int MaxQuantity = 1,
     int Priority = 0,
     bool Hide = false,
-    bool AllowsPartialContributions = false
+    bool AllowsPartialContributions = false,
+    bool IsDonation = false
 )
 {
     public int QuantityClaimed => Claims.Sum(c => c.Quantity);

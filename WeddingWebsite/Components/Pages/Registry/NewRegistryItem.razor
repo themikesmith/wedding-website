@@ -80,6 +80,11 @@
         <span class="flex-grow"></span>
         <InputCheckbox @bind-Value="Input.AllowMoneyTransfer" class="form-check-input" id="allow-money-transfer" />
     </div>
+    <div class="form-input-and-label">
+        <label for="is-donation">Is Donation</label>
+        <span class="flex-grow"></span>
+        <InputCheckbox @bind-Value="Input.IsDonation" class="form-check-input" id="allow-money-transfer" />
+    </div>
     @if (Input.AllowMoneyTransfer)
     {
         <div class="form-input-and-label">
@@ -162,7 +167,8 @@
             1, // max quantity
             0, // priority
             false, // hide
-            Input.AllowsPartialContributions
+            Input.AllowsPartialContributions,
+            Input.IsDonation
         );
         
         RegistryService.AddItem(newItem);
@@ -228,6 +234,9 @@
         
         [Display(Name = "Allow Money Transfer")]
         public bool AllowMoneyTransfer { get; set; } = true;
+        
+        [Display(Name = "Is Donation")]
+        public bool IsDonation { get; set; } = true;
         
         [Display(Name = "Include Delivery Cost in Money Transfer")]
         public bool IncludeDeliveryCostInMoneyTransfer { get; set; } = true;

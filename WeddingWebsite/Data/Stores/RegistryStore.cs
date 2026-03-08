@@ -20,8 +20,8 @@ public class RegistryStore : IRegistryStore
         var cmd = connection.CreateCommand();
         cmd.Transaction = transaction;
         cmd.CommandText = @"
-            INSERT INTO RegistryItems (Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions)
-            VALUES (:id, :genericName, :name, :description, :imageUrl, :maxQuantity, :priority, :hide, :allowsPartialContributions);
+            INSERT INTO RegistryItems (Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation)
+            VALUES (:id, :genericName, :name, :description, :imageUrl, :maxQuantity, :priority, :hide, :allowsPartialContributions, :isDonation);
         ";
         cmd.Parameters.AddWithValue(":id", item.Id);
         cmd.Parameters.AddWithValue(":genericName", item.GenericName);
@@ -32,6 +32,7 @@ public class RegistryStore : IRegistryStore
         cmd.Parameters.AddWithValue(":priority", item.Priority);
         cmd.Parameters.AddWithValue(":hide", item.Hide ? 1 : 0);
         cmd.Parameters.AddWithValue(":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
+        cmd.Parameters.AddWithValue(":isDonation", item.IsDonation ? 1 : 0);
 
         cmd.ExecuteNonQuery();
 
@@ -85,7 +86,8 @@ public class RegistryStore : IRegistryStore
                 MaxQuantity = :maxQuantity,
                 Priority = :priority,
                 Hide = :hide,
-                AllowsPartialContributions = :allowsPartialContributions
+                AllowsPartialContributions = :allowsPartialContributions,
+                IsDonation = :isDonation
             WHERE Id = :id;
         ";
         cmd.Parameters.AddWithValue(":id", item.Id);
@@ -97,6 +99,7 @@ public class RegistryStore : IRegistryStore
         cmd.Parameters.AddWithValue(":priority", item.Priority);
         cmd.Parameters.AddWithValue(":hide", item.Hide ? 1 : 0);
         cmd.Parameters.AddWithValue(":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
+        cmd.Parameters.AddWithValue(":isDonation", item.IsDonation ? 1 : 0);
 
         var rowsAffected = cmd.ExecuteNonQuery();
         if (rowsAffected == 0)
@@ -221,7 +224,7 @@ public class RegistryStore : IRegistryStore
 
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions
+            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation
             FROM RegistryItems
             WHERE Id = :id;
         ";
@@ -242,6 +245,7 @@ public class RegistryStore : IRegistryStore
         var priority = reader.GetInt32(6);
         var hide = reader.GetBoolean(7);
         var allowsPartialContributions = reader.GetBoolean(8);
+        var isDonation = reader.GetBoolean(9);
 
         var purchaseMethods = GetPurchaseMethodsForItem(id, connection);
         var claims = GetClaimsForItem(id, connection);
@@ -257,7 +261,8 @@ public class RegistryStore : IRegistryStore
             maxQuantity,
             priority,
             hide,
-            allowsPartialContributions
+            allowsPartialContributions,
+            isDonation
         );
     }
 
@@ -333,7 +338,7 @@ public class RegistryStore : IRegistryStore
 
         var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions
+            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation
             FROM RegistryItems
             " + (includeHidden ? "" : "WHERE Hide = 0 ") + @"
             ORDER BY Priority DESC, Name ASC;
@@ -351,6 +356,7 @@ public class RegistryStore : IRegistryStore
             var priority = reader.GetInt32(6);
             var hide = reader.GetBoolean(7);
             var allowsPartialContributions = reader.GetBoolean(8);
+            var isDonation = reader.GetBoolean(9);
 
             var purchaseMethods = GetPurchaseMethodsForItem(id, connection);
             var claims = GetClaimsForItem(id, connection);
@@ -366,7 +372,8 @@ public class RegistryStore : IRegistryStore
                 maxQuantity,
                 priority,
                 hide,
-                allowsPartialContributions
+                allowsPartialContributions,
+                isDonation
             );
             items.Add(item);
         }
@@ -398,6 +405,10 @@ public class RegistryStore : IRegistryStore
         //}
         //var maxQuantity = Convert.ToInt32(maxQuantityObj);
         var item = GetRegistryItemById(itemId);
+        if (item is null)
+        {
+            throw new InvalidOperationException($"No registry item found with ID {itemId}");
+        }
         /**
         var maxQuantity = item.MaxQuantity;
 

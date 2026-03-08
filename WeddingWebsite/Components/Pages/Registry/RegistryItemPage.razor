@@ -39,7 +39,7 @@
             <RightContent>
                 <h1>@Item.Name</h1>
                 <p class="description">@Item.Description</p>
-                @if (Item.MaxQuantity != 1)
+                @if (Item.MaxQuantity != 1 && ! Item.IsDonation)
                 {
                     <p>@StringProvider.QuantityClaimed(Item.QuantityClaimed, Item.MaxQuantity)</p>
                 }
@@ -49,7 +49,9 @@
                     if (Item.GetClaimByUser(UserId).PurchaseMethodId == null
                         || ((Item.GetPurchaseMethodByUser(UserId).AllowDeliverToUs || Item.GetPurchaseMethodByUser(UserId).AllowBringOnDay) && Item.GetClaimByUser(UserId).DeliveryAddress == null))
                     {
-                        <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeDetails</p>
+                        if (! Item.IsDonation) {
+                            <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeDetails</p>
+                        }
                     }
                 }
                 else
@@ -72,24 +74,27 @@
                                 <div class="purchase-option-content">
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
-                                    @if (Item.AllowsPartialContributions)
+                                    @if (!Item.IsDonation)
                                     {
-                                        @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                        @if (Item.AllowsPartialContributions)
                                         {
+                                            @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                            {
                                             <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="purchase-option-cost-other">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                            }
                                         }
                                         else
                                         {
-                                            <p class="purchase-option-cost-other">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                            <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
-                                    }
-                                    @if (method.DeliveryCost > 0)
-                                    {
-                                        <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                        @if (method.DeliveryCost > 0)
+                                        {
+                                            <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                        }
                                     }
                                     <Button>@StringProvider.View</Button>
                                 </div>
@@ -103,24 +108,27 @@
                                 <div class="purchase-option-content">
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
-                                    @if (Item.AllowsPartialContributions)
+                                    @if (!Item.IsDonation)
                                     {
-                                        @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                        @if (Item.AllowsPartialContributions)
                                         {
-                                            <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                            @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                            {
+                                                <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                            }
                                         }
                                         else
                                         {
                                             <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
-                                    }
-                                    @if (method.DeliveryCost > 0)
-                                    {
-                                        <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                        @if (method.DeliveryCost > 0)
+                                        {
+                                            <p class="purchase-option-delivery-cost">@StringProvider.DeliveryCost(method.DeliveryCost)</p>
+                                        }
                                     }
                                 </div>
                             </Box>
@@ -239,12 +247,17 @@
                         <h2>@StringProvider.ContributeToThisItem</h2>
                         <p class="claim-item-description">@StringProvider.ContributeToThisItemDescription</p>
                     }
+                    else if (Item.IsDonation)
+                    {
+                        <h2>@StringProvider.ClaimThisItemDonation</h2>
+                        <p class="claim-item-description">@StringProvider.ClaimThisItemDescriptionDonation</p>
+                    }
                     else
                     {
                         <h2>@StringProvider.ClaimThisItem</h2>
                         <p class="claim-item-description">@StringProvider.ClaimThisItemDescription</p>
                     }
-                    @if (Item.MaxQuantity > 1)
+                    @if (Item.MaxQuantity > 1 && ! Item.IsDonation)
                     {
                         <div class="quantity-selector">
                             <label for="quantity">@StringProvider.Quantity:</label>
@@ -258,7 +271,14 @@
                             <input id="Contribution" type="decimal" min="1.00" max="@Item.MaxCost" @bind-value="EnteredContribution"/>
                         </div>
                     }
-                    <Button OnClick="ClaimItem">@StringProvider.Contribute</Button>
+                    @if (Item.AllowsPartialContributions)
+                    {
+                        <Button OnClick="ClaimItem">@StringProvider.Contribute</Button>
+                    }
+                    else
+                    {
+                        <Button OnClick="ClaimItem">@StringProvider.Claim</Button>
+                    }
                 }
                 <p class="text-danger">@ErrorText</p>
                 

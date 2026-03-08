@@ -30,5 +30,6 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
     public new string SelectDeliveryAddressDescription => "You can either get it delivered to your own address and bring it on the day, or get it delivered to us beforehand - it's up to you what's easiest!";
     public new string ItemReadyToPurchaseDescription => "Thank you for filling in those details! You're now free to complete the purchase when you're ready. Once done, please mark it as completed.";
     public new string ClaimThisItemDescription => "If you'd like to kindly buy this item for us, the first step is to claim it so that nobody else can buy this item. Once it's claimed, you'll be asked how you want to purchase it. Don't worry, this can be undone if you change your mind.";
+    public new string ClaimThisItemDescriptionDonation => "If you'd like to donate in our name, please mark a claim below so we can track everyone's contributions. Once it's marked, you'll be presented with a direct to the link to the donation page. This can be undone if you change your mind.";
     public new string ContributeToThisItemDescription => "If you'd like to kindly contribute towards this item for us, the first step is to enter your contribution. Once it's entered, you'll be asked how you want to transfer funds. Don't worry, this can be undone if you change your mind.";
 }

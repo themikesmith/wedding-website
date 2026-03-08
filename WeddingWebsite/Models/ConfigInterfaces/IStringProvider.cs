@@ -142,7 +142,9 @@ public interface IStringProvider
     string ItemClaimed { get; }
     string ItemClaimedDescription { get; }
     string ClaimThisItem { get; }
+    string ClaimThisItemDonation { get; }
     string ClaimThisItemDescription { get; }
+    string ClaimThisItemDescriptionDonation { get; }
     string Quantity { get; }
     string Claim { get; }
     string Contribution { get; }
