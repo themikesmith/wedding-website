@@ -208,8 +208,15 @@
                 }
                 else
                 {
-                    <h2>@StringProvider.ClaimThisItem</h2>
-                    <p class="claim-item-description">@StringProvider.ClaimThisItemDescription</p>
+                    @if (Item.AllowsPartialContributions){
+                        <h2>@StringProvider.ContributeToThisItem</h2>
+                        <p class="claim-item-description">@StringProvider.ContributeToThisItemDescription</p>
+                    }
+                    else
+                    {
+                        <h2>@StringProvider.ClaimThisItem</h2>
+                        <p class="claim-item-description">@StringProvider.ClaimThisItemDescription</p>
+                    }
                     @if (Item.MaxQuantity > 1)
                     {
                         <div class="quantity-selector">
@@ -224,7 +231,7 @@
                             <input id="Contribution" type="decimal" min="1.00" max="@Item.MaxCost" @bind-value="EnteredContribution"/>
                         </div>
                     }
-                    <Button OnClick="ClaimItem">@StringProvider.Claim</Button>
+                    <Button OnClick="ClaimItem">@StringProvider.Contribute</Button>
                 }
                 <p class="text-danger">@ErrorText</p>
                 

@@ -142,7 +142,10 @@ public class StandardBritishEnglish : IStringProvider
     public string ClaimThisItemDescription => "If you'd like to kindly buy this item for us, please press claim. You can unclaim it later if you change your mind.";
     public string Quantity => "Quantity";
     public string Contribution => "Contribution";
+    public string ContributeToThisItem => "Contribute to this Item";
+    public string ContributeToThisItemDescription => "If you'd like to kindly contribute towards this item for us, please press contribute. You can unclaim it later if you change your mind.";
     public string Claim => "Claim";
+    public string Contribute => "Contribute";
     
     public string RegistryInactiveDescription(string description) => $"The registry is {description}.";
 
