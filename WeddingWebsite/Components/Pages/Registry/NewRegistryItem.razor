@@ -120,9 +120,14 @@
             Input.PurchaseInstructions == "" ? null : Input.PurchaseInstructions,
             Input.DeliveryCost
         );
+
+        if (Input.AllowsPartialContributions) {
+            // must allow money transfer if partial contributions
+            Input.AllowMoneyTransfer = true;
+        }
         var moneyTransferPurchaseMethod = Input.AllowMoneyTransfer ? new RegistryItemPurchaseMethod(
             Guid.NewGuid().ToString(),
-            "Money Transfer",
+            "Money Transfer", // TODO map to string provider MoneyTransferPurchaseMethod
             Input.IncludeDeliveryCostInMoneyTransfer ? Input.Cost.Value + Input.DeliveryCost : Input.Cost.Value,
             false,
             false,
@@ -130,13 +135,29 @@
             Input.MoneyTransferPurchaseInstructions == "" ? null : Input.MoneyTransferPurchaseInstructions,
             0
         ) : null;
+        
+        List<RegistryItemPurchaseMethod> purchaseMethodList;
+        if (Input.AllowsPartialContributions)
+        {
+            if (moneyTransferPurchaseMethod is not null)
+            {
+                purchaseMethodList = new List<RegistryItemPurchaseMethod> { moneyTransferPurchaseMethod }.Concat( new [] { primaryPurchaseMethod }).ToList();
+            }
+            else { // will never happen per above 
+                purchaseMethodList = new List<RegistryItemPurchaseMethod>  { primaryPurchaseMethod };
+            }
+        }
+        else
+        {
+            purchaseMethodList = new List<RegistryItemPurchaseMethod> { primaryPurchaseMethod }.Concat(moneyTransferPurchaseMethod is not null ? new[] { moneyTransferPurchaseMethod } : Array.Empty<RegistryItemPurchaseMethod>()).ToList();
+        }
         var newItem = new RegistryItem(
             Guid.NewGuid().ToString(),
             Input.GenericName,
             Input.Name,
             Input.Description == "" ? null : Input.Description,
             Input.ImageUrl == "" ? null : Input.ImageUrl,
-            new List<RegistryItemPurchaseMethod> { primaryPurchaseMethod }.Concat(moneyTransferPurchaseMethod is not null ? new[] { moneyTransferPurchaseMethod } : Array.Empty<RegistryItemPurchaseMethod>()).ToList(),
+            purchaseMethodList,
             [], // claims
             1, // max quantity
             0, // priority

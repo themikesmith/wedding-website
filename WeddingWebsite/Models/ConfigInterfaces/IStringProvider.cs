@@ -109,6 +109,7 @@ public interface IStringProvider
     string QuantityClaimed(int claimed, int total);
     string PurchaseOptions { get; }
     string DoNotPurchaseBeforeClaiming { get; }
+    string DoNotPurchaseBeforeContributing { get; }
     string DoNotPurchaseBeforeDetails { get; }
     string CurrencySymbol { get; }
     string CurrencyAmount(decimal amount);
@@ -148,6 +149,7 @@ public interface IStringProvider
     string Contribute { get; }
     string ContributeToThisItem { get; }
     string ContributeToThisItemDescription { get; }
+    string MoneyTransferPurchaseMethod { get; }
 
     string RegistryInactiveDescription(string description);
     

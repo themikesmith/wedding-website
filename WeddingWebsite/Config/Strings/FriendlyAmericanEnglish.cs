@@ -24,6 +24,7 @@ public class FriendlyAmericanEnglish : StandardAmericanEnglish, IStringProvider
     public new string RegistryDescription2 => "You can click on an item to view more information about it. Once you've decided to purchase it, please claim it so that we don't get multiple people buying the same thing!";
     
     public new string DoNotPurchaseBeforeClaiming => "Please do not make a purchase before claiming the item first - this will reserve it so we don't get two people buying the same thing!";
+    public new string DoNotPurchaseBeforeContributing => "Please do not send money before marking your contribution below first - this will reserve your amount so we don't get extra funds!";
     public new string NotesDescription => "If you'd like to add any notes, you can do so in the box below. It's entirely up to you how you want to use this, if at all.";
     public new string SelectPurchaseMethodDescription => "Thank you so much for offering to purchase this item! The next step is to choose how you would like to purchase it.";
     public new string SelectDeliveryAddressDescription => "You can either get it delivered to your own address and bring it on the day, or get it delivered to us beforehand - it's up to you what's easiest!";

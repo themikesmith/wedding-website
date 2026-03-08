@@ -107,7 +107,9 @@ public class StandardBritishEnglish : IStringProvider
     public string QuantityClaimed(int claimed, int total) => $"Quantity Claimed: {claimed}/{total}.";
     public string PurchaseOptions => "Purchase Options";
     public string DoNotPurchaseBeforeClaiming => "Please do not make a purchase before you have claimed the item.";
+    public string DoNotPurchaseBeforeContributing => "Please do not send any funds before you have contributed towards the item.";
     public string DoNotPurchaseBeforeDetails => "Please finish selecting the details below before making a purchase.";
+    public string MoneyTransferPurchaseMethod => "Money Transfer";
     public virtual string CurrencySymbol => "£";
     public string CurrencyAmount(decimal amount)=> $"{CurrencySymbol}{amount:F2}";
     public string DeliveryCost(decimal cost) => $"+{CurrencyAmount(cost)} delivery";

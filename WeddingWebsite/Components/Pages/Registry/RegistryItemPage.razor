@@ -54,7 +54,14 @@
                 }
                 else
                 {
-                    <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeClaiming</p>
+                    @if(Item.AllowsPartialContributions)
+                    {
+                        <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeContributing</p>
+                    }
+                    else
+                    {
+                        <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeClaiming</p>
+                    }
                 }
                 @foreach (var method in Item.PurchaseMethods)
                 {
@@ -65,10 +72,20 @@
                                 <div class="purchase-option-content">
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
-                                    <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                     @if (Item.AllowsPartialContributions)
                                     {
-                                    <p class="purchase-option-cost-remaining">(Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost()))</p>
+                                        @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                        {
+                                            <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="purchase-option-cost-other">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                     }
                                     @if (method.DeliveryCost > 0)
                                     {
@@ -86,10 +103,20 @@
                                 <div class="purchase-option-content">
                                     <p class="purchase-option-name">@method.Name</p>
                                     <MudSpacer/>
-                                    <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                     @if (Item.AllowsPartialContributions)
                                     {
-                                    <p class="purchase-option-cost-remaining">(Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost()))</p>
+                                        @if (method.Name == StringProvider.MoneyTransferPurchaseMethod)
+                                        {
+                                            <p class="purchase-option-cost">Remaining: @StringProvider.CurrencyAmount(Item.RemainingCost())</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="purchase-option-cost">@StringProvider.CurrencyAmount(method.Cost)</p>
                                     }
                                     @if (method.DeliveryCost > 0)
                                     {
