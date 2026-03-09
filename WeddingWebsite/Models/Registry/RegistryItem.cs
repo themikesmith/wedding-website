@@ -21,6 +21,19 @@ public record RegistryItem(
     public decimal CheapestCost => PurchaseMethods.Min(pm => pm.Cost);
     public decimal MaxCost => PurchaseMethods.Max(pm => pm.Cost);
 
+    public IEnumerable<RegistryItemPurchaseMethod> GetPurchaseMethods()
+    {
+        // TODO make "buy in full" a set string
+        if (AllowsPartialContributions)
+        {
+            return PurchaseMethods.Where(p => ! p.Name.Contains("(buy in full)"));
+        }
+        else
+        {
+            return PurchaseMethods;
+        }
+    }
+
     public bool IsFullyClaimed()
     {
         if (AllowsPartialContributions)

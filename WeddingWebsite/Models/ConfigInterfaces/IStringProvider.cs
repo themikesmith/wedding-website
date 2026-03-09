@@ -125,8 +125,10 @@ public interface IStringProvider
     string NotesPlaceholder { get; }
     string SaveNotes { get; }
     string SelectPurchaseMethod { get; }
+    string SelectPurchaseMethodDonation { get; }
     MarkupString SelectedQuantity(int quantity);
     string SelectPurchaseMethodDescription { get; }
+    string SelectPurchaseMethodDescriptionDonation { get; }
     string SelectDeliveryAddress { get; }
     MarkupString SelectedPurchaseMethod(string purchaseMethod);
     string SelectDeliveryAddressDescription { get; }
@@ -138,6 +140,7 @@ public interface IStringProvider
     MarkupString CustomPurchaseInstructions(string? instructions);
     string MarkAsCompleted { get; }
     string UnclaimDescription { get; }
+    string UnclaimDescriptionDonation { get; }
     string Unclaim { get; }
     string ItemClaimed { get; }
     string ItemClaimedDescription { get; }

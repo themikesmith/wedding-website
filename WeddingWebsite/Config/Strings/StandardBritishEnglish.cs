@@ -124,8 +124,10 @@ public class StandardBritishEnglish : IStringProvider
     public string NotesPlaceholder => "Add a note visible to you and the website administrators (optional).";
     public string SaveNotes => "Save Notes";
     public string SelectPurchaseMethod => "Select Purchase Method";
+    public string SelectPurchaseMethodDonation => "Donation Method";
     public MarkupString SelectedQuantity(int quantity) => (MarkupString) $"Selected quantity: <b>{quantity}</b>.";
     public string SelectPurchaseMethodDescription => "Please choose how you would like to purchase this item.";
+    public string SelectPurchaseMethodDescriptionDonation => "Thank you for offering to donate! Please find the information below.";
     public string SelectDeliveryAddress => "Select Delivery Address";
     public MarkupString SelectedPurchaseMethod(string purchaseMethod) => (MarkupString) $"Selected purchase method: <b>{purchaseMethod}</b>.";
     public string SelectDeliveryAddressDescription => "Please choose how you would like to give the item to us.";
@@ -137,6 +139,7 @@ public class StandardBritishEnglish : IStringProvider
     public MarkupString CustomPurchaseInstructions(string? instructions) => (MarkupString) $"<b>Instructions:</b> {instructions}";
     public string MarkAsCompleted => "Mark as Completed (cannot be undone)";
     public string UnclaimDescription => "If you've changed your mind and you'd no longer like to buy this item, please unclaim it to make it available to others.";
+    public string UnclaimDescriptionDonation => "If you've changed your mind and you'd no longer like to make a donation, please mark unclaim.";
     public string Unclaim => "Unclaim";
     public string ItemClaimed => "Item Already Claimed";
     public string ItemClaimedDescription => "Sorry, this item has already been claimed by someone else.";

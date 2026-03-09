@@ -67,7 +67,7 @@
                             <p class="text-danger claim-item-description">@StringProvider.DoNotPurchaseBeforeClaiming</p>
                         }
                     }
-                    @foreach (var method in Item.PurchaseMethods)
+                    @foreach (var method in Item.GetPurchaseMethods())
                     {
                         @if (method.Url != null)
                         {
@@ -165,14 +165,28 @@
                 {
                     @if (Item.GetClaimByUser(UserId).PurchaseMethodId == null)
                     {
-                        <h2>@StringProvider.SelectPurchaseMethod</h2>
+                        @if (Item.IsDonation) 
+                        {
+                            <h2>@StringProvider.SelectPurchaseMethodDonation</h2>
+                        }
+                        else
+                        {
+                            <h2>@StringProvider.SelectPurchaseMethod</h2>
+                        }
                         @if (Item.MaxQuantity > 1)
                         {
                             <p class="claim-item-description">@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="RemoveClaim">[@StringProvider.Undo]</a></p>
                         }
-                        <p>@StringProvider.SelectPurchaseMethodDescription</p>
+                        @if (Item.IsDonation)
+                        {
+                            <p>@StringProvider.SelectPurchaseMethodDescriptionDonation</p>
+                        }
+                        else
+                        {
+                            <p>@StringProvider.SelectPurchaseMethodDescription</p>
+                        }
                         <div class="choose-purchase-option">
-                            @foreach (var method in Item.PurchaseMethods)
+                            @foreach (var method in Item.GetPurchaseMethods())
                             {
                                 <a class="choose-purchase-option-method" @onclick="() => ChoosePurchaseMethod(method.Id)">
                                     <Box>
@@ -236,7 +250,14 @@
                         <div style="margin-bottom: 10px"></div>
                         <Button OnClick="MarkCompleted">@StringProvider.MarkAsCompleted</Button>
                     }
-                    <p class="claim-item-description" style="margin-top: 10px">@StringProvider.UnclaimDescription</p>
+                    @if (Item.IsDonation)
+                    {
+                        <p class="claim-item-description" style="margin-top: 10px">@StringProvider.UnclaimDescriptionDonation</p>
+                    }
+                    else
+                    {
+                        <p class="claim-item-description" style="margin-top: 10px">@StringProvider.UnclaimDescription</p>
+                    }
                     <Button OnClick="RemoveClaim">@StringProvider.Unclaim</Button>
                     
                 } else if (Item.IsFullyClaimed())
