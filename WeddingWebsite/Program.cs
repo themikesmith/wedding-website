@@ -18,10 +18,17 @@ using WeddingWebsite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load implementation class names from configuration
+var weddingDetailsClassName = builder.Configuration["ConfigImplementations:WeddingDetailsClass"] ?? "RealWeddingDetails";
+var rsvpFormClassName = builder.Configuration["ConfigImplementations:RsvpFormClass"] ?? "CustomRsvpForm";
+var credentialsClassName = builder.Configuration["ConfigImplementations:CredentialsClass"] ?? "MCSCredentials";
+
 // Required - All the information about your wedding. Please create your own implementation of IWeddingDetails.
 // See WeddingDetailsTemplate for a starting point. If you rename the file to RealWeddingDetails, it will be
-// ignored from git so that it is kept private.
-builder.Services.AddScoped<IWeddingDetails, TestWeddingDetails>();
+// ignored from git so that it is kept private. The class name is configured in appsettings.json.
+var weddingDetailsType = Type.GetType($"WeddingWebsite.Config.WeddingDetails.{weddingDetailsClassName}") ??
+    throw new InvalidOperationException($"WeddingDetails implementation '{weddingDetailsClassName}' not found. Check ConfigImplementations:WeddingDetailsClass in appsettings.json.");
+builder.Services.AddScoped(typeof(IWeddingDetails), weddingDetailsType);
 
 // Recommended - Customise the theme and layout. Please create your own implementation of IWebsiteConfig. It is
 // recommended to have this also inherit from DefaultConfig. See DemoConfig for an example. If you rename the file
@@ -30,12 +37,17 @@ builder.Services.AddScoped<IWebsiteConfig, TestConfig>();
 
 // Recommended - Customise your RSVP form to gather the information that you need! You can safely ignore this until you
 // plan to open RSVPs. You should implement IRsvpForm - see DemoRsvpForm for an example. If you rename the file to
-// CustomRsvpForm, it will be ignored from git so that it is kept private.
-builder.Services.AddScoped<IRsvpForm, DemoRsvpForm>();
+// CustomRsvpForm, it will be ignored from git so that it is kept private. The class name is configured in appsettings.json.
+var rsvpFormType = Type.GetType($"WeddingWebsite.Config.Rsvp.{rsvpFormClassName}") ??
+    throw new InvalidOperationException($"RsvpForm implementation '{rsvpFormClassName}' not found. Check ConfigImplementations:RsvpFormClass in appsettings.json.");
+builder.Services.AddScoped(typeof(IRsvpForm), rsvpFormType);
 
 // Optional - If you would like to use any functionality that requires credentials (e.g. google maps), please create a
 // file called Credentials.cs that implements ICredentials. This will be ignored from git so that it is kept private.
-builder.Services.AddScoped<ICredentials, NoCredentials>();
+// The class name is configured in appsettings.json.
+var credentialsType = Type.GetType($"WeddingWebsite.Config.Credentials.{credentialsClassName}") ??
+    throw new InvalidOperationException($"Credentials implementation '{credentialsClassName}' not found. Check ConfigImplementations:CredentialsClass in appsettings.json.");
+builder.Services.AddScoped(typeof(ICredentials), credentialsType);
 
 // Optional - If you'd like to customise the wording or translate into a different language, you can swap out for a
 // different implementation of IStringProvider. If you're only changing a few strings, you can inherit from
@@ -71,10 +83,12 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? 
+    builder.Configuration.GetConnectionString("DefaultConnection") ?? 
+    throw new InvalidOperationException("Connection string not found. Provide DATABASE_URL environment variable or set 'DefaultConnection' in appsettings.json.");
+// Console.WriteLine($"Using connection string: {connectionString}"); // Log the connection string for debugging (be cautious with sensitive info in production)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-// builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+    options.ConfigureDatabaseProvider(connectionString));
 
 builder.Services.AddIdentityCore<Account>(options => {
     options.Password.RequireDigit = false;
