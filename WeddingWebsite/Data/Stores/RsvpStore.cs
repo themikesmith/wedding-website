@@ -1,24 +1,26 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.Common;
 using Microsoft.AspNetCore.Authorization;
 using WeddingWebsite.Data.Models;
 using WeddingWebsite.Models.People;
 
 namespace WeddingWebsite.Data.Stores;
 
-public class RsvpStore : IRsvpStore
+public class RsvpStore : DataStoreBase, IRsvpStore
 {
-    private const string ConnectionString = "DataSource=Data\\app.db;Cache=Shared";
+    public RsvpStore(IConfiguration configuration) : base(configuration)
+    {
+    }
     
     [Authorize]
     public bool SubmitRsvp(string guestId, bool isAttending, IReadOnlyList<string?> rsvpData)
     {
-        using var connection = new SqliteConnection(ConnectionString);
+        using DbConnection connection = CreateConnection();
         connection.Open();
 
         // Check if the user has already RSVPed
         var checkCommand = connection.CreateCommand();
         checkCommand.CommandText = "SELECT GuestId FROM RsvpFormResponses WHERE GuestId = :guestId";
-        checkCommand.Parameters.AddWithValue(":guestId", guestId);
+        AddParameter(checkCommand, ":guestId", guestId);
         using var reader = checkCommand.ExecuteReader();
         while (reader.Read())
         {
@@ -33,14 +35,14 @@ public class RsvpStore : IRsvpStore
             VALUES ($guestId, $isAttending, $data0, $data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8, $data9, $data10,
                     $data11, $data12, $data13, $data14, $data15, $data16, $data17, $data18, $data19, $data20)";
         
-        insertCommand.Parameters.AddWithValue("guestId", guestId);
-        insertCommand.Parameters.AddWithValue("isAttending", isAttending ? 1 : 0);
+        AddParameter(insertCommand, "guestId", guestId);
+        AddParameter(insertCommand, "isAttending", isAttending ? 1 : 0);
         
         for (int i = 0; i <= 20; i++)
         {
             var paramName = $"data{i}";
             var dataValue = rsvpData.ElementAtOrDefault(i);
-            insertCommand.Parameters.AddWithValue(paramName, (object?) dataValue ?? DBNull.Value);
+            AddParameter(insertCommand, paramName, (object?) dataValue ?? DBNull.Value);
         }
 
         var rowsUpdated = insertCommand.ExecuteNonQuery();
@@ -51,7 +53,7 @@ public class RsvpStore : IRsvpStore
     [Authorize]
     public RsvpResponseData? GetRsvp(string guestId)
     {
-        using var connection = new SqliteConnection(ConnectionString);
+        using DbConnection connection = CreateConnection();
         connection.Open();
 
         var selectCommand = connection.CreateCommand();
@@ -62,7 +64,7 @@ public class RsvpStore : IRsvpStore
             LEFT JOIN Guests on RsvpFormResponses.GuestId = Guests.GuestId
             WHERE RsvpFormResponses.GuestId = $guestId";
         
-        selectCommand.Parameters.AddWithValue("guestId", guestId);
+        AddParameter(selectCommand, "guestId", guestId);
 
         using var reader = selectCommand.ExecuteReader();
         if (!reader.Read())
@@ -93,7 +95,7 @@ public class RsvpStore : IRsvpStore
     [Authorize(Roles = "Admin")]
     public IEnumerable<RsvpResponseData> GetAllRsvps()
     {
-        using var connection = new SqliteConnection(ConnectionString);
+        using DbConnection connection = CreateConnection();
         connection.Open();
 
         var selectCommand = connection.CreateCommand();
@@ -131,12 +133,12 @@ public class RsvpStore : IRsvpStore
     [Authorize(Roles = "Admin")]
     public void DeleteRsvp(string guestId)
     {
-        using var connection = new SqliteConnection(ConnectionString);
+        using DbConnection connection = CreateConnection();
         connection.Open();
 
         var deleteCommand = connection.CreateCommand();
         deleteCommand.CommandText = "DELETE FROM RsvpFormResponses WHERE GuestId = $guestId";
-        deleteCommand.Parameters.AddWithValue("guestId", guestId);
+        AddParameter(deleteCommand, "guestId", guestId);
 
         deleteCommand.ExecuteNonQuery();
     }

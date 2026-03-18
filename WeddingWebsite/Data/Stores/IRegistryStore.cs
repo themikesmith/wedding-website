@@ -2,7 +2,7 @@
 
 namespace WeddingWebsite.Data.Stores;
 
-public interface IRegistryStore
+public interface IRegistryStore : IDataStore
 {
     /// <summary>
     /// Add a new registry item.

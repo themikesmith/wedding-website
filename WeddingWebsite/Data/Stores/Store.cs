@@ -1,5 +1,5 @@
+using System.Data.Common;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Data.Sqlite;
 using WeddingWebsite.Core;
 using WeddingWebsite.Data.Enums;
 using WeddingWebsite.Data.Models;
@@ -8,12 +8,16 @@ using WeddingWebsite.Models.People;
 
 namespace WeddingWebsite.Data.Stores;
 
-public class Store : IStore
+public class Store : DataStoreBase, IStore
 {
+    public Store(IConfiguration configuration) : base(configuration)
+    {
+    }
+
     [Authorize]
     public IEnumerable<GuestWithId> GetGuestsForUser(string userId)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -24,7 +28,7 @@ public class Store : IStore
             LEFT JOIN RsvpFormResponses ON Guests.GuestId = RsvpFormResponses.GuestId
             WHERE UserId = :userId
         ";
-        command.Parameters.AddWithValue(":userId", userId);
+        AddParameter(command, ":userId", userId);
 
         using var reader = command.ExecuteReader();
         var guests = new List<GuestWithId>();
@@ -43,7 +47,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public void AddGuestToAccount(string userId, string firstName, string lastName, RsvpStatus rsvpStatus)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -52,11 +56,11 @@ public class Store : IStore
             INSERT INTO Guests (GuestId, UserId, FirstName, LastName, RsvpStatus)
             VALUES (:guestId, :userId, :firstName, :lastName, :rsvpStatus)
         ";
-        command.Parameters.AddWithValue(":guestId", Guid.NewGuid().ToString());
-        command.Parameters.AddWithValue(":userId", userId);
-        command.Parameters.AddWithValue(":firstName", firstName);
-        command.Parameters.AddWithValue(":lastName", lastName);
-        command.Parameters.AddWithValue(":rsvpStatus", RsvpStatusEnumConverter.ToDatabaseInteger(rsvpStatus));
+        AddParameter(command, ":guestId", Guid.NewGuid().ToString());
+        AddParameter(command, ":userId", userId);
+        AddParameter(command, ":firstName", firstName);
+        AddParameter(command, ":lastName", lastName);
+        AddParameter(command, ":rsvpStatus", RsvpStatusEnumConverter.ToDatabaseInteger(rsvpStatus));
 
         command.ExecuteNonQuery();
     }
@@ -64,7 +68,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public IEnumerable<AccountWithGuests> GetAllAccounts()
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -75,11 +79,12 @@ public class Store : IStore
                 LEFT JOIN Guests guest ON account.Id = guest.UserId
                 LEFT JOIN AccountLog log ON account.Id = log.AffectedUserId AND log.EventType = :loginEventType
                 LEFT JOIN RsvpFormResponses rsvp ON guest.GuestId = rsvp.GuestId
-                GROUP BY account.UserName, guest.GuestId
+                GROUP BY account.UserName, guest.GuestId, account.Id, account.Email, guest.FirstName, guest.LastName, rsvp.IsAttending
                 ORDER BY account.UserName
             """;
+            // above only had first two group bys
         
-        command.Parameters.AddWithValue(":loginEventType", AccountLogTypeEnumConverter.AccountLogTypeToDatabaseInteger(AccountLogType.LogIn));
+        AddParameter(command, ":loginEventType", AccountLogTypeEnumConverter.AccountLogTypeToDatabaseInteger(AccountLogType.LogIn));
         
         using var reader = command.ExecuteReader();
         var accounts = new List<AccountWithGuests>();
@@ -140,7 +145,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public IEnumerable<GuestWithId> GetGuestsForAccount(string userId)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -151,7 +156,7 @@ public class Store : IStore
                 LEFT JOIN RsvpFormResponses ON Guests.GuestId = RsvpFormResponses.GuestId
                 WHERE UserId = :userId
             """;
-        command.Parameters.AddWithValue(":userId", userId);
+        AddParameter(command, ":userId", userId);
         
         using var reader = command.ExecuteReader();
         var guests = new List<GuestWithId>();
@@ -170,7 +175,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public void RenameGuest(string guestId, string newFirstName, string newLastName)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -181,9 +186,9 @@ public class Store : IStore
                 WHERE GuestId = :guestId
             """;
         
-        command.Parameters.AddWithValue(":newFirstName", newFirstName);
-        command.Parameters.AddWithValue(":newLastName", newLastName);
-        command.Parameters.AddWithValue(":guestId", guestId);
+        AddParameter(command, ":newFirstName", newFirstName);
+        AddParameter(command, ":newLastName", newLastName);
+        AddParameter(command, ":guestId", guestId);
         
         command.ExecuteNonQuery();
     }
@@ -191,7 +196,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public void DeleteGuest(string guestId)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -201,7 +206,7 @@ public class Store : IStore
                 WHERE GuestId = :guestId
             """;
         
-        command.Parameters.AddWithValue(":guestId", guestId);
+        AddParameter(command, ":guestId", guestId);
         
         command.ExecuteNonQuery();
     }
@@ -209,7 +214,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public string? GetAccountIdFromGuestId(string guestId)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -220,7 +225,7 @@ public class Store : IStore
                 WHERE GuestId = :guestId
             """;
         
-        command.Parameters.AddWithValue(":guestId", guestId);
+        AddParameter(command, ":guestId", guestId);
         
         using var reader = command.ExecuteReader();
         if (reader.Read())
@@ -235,7 +240,7 @@ public class Store : IStore
     [Authorize]
     public void AddAccountLog(string affectedUserId, string actorId, AccountLogType logType, string description)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -245,19 +250,19 @@ public class Store : IStore
                 VALUES (:logId, :timestamp, :affectedUserId, :actorId, :eventType, :description)
             """;
         
-        command.Parameters.AddWithValue(":logId", Guid.NewGuid().ToString());
-        command.Parameters.AddWithValue(":timestamp", DateTime.UtcNow.Ticks);
-        command.Parameters.AddWithValue(":affectedUserId", affectedUserId);
-        command.Parameters.AddWithValue(":actorId", actorId);
-        command.Parameters.AddWithValue(":eventType", logType.ToDatabaseInteger());
-        command.Parameters.AddWithValue(":description", description);
+        AddParameter(command, ":logId", Guid.NewGuid().ToString());
+        AddParameter(command, ":timestamp", DateTime.UtcNow.Ticks);
+        AddParameter(command, ":affectedUserId", affectedUserId);
+        AddParameter(command, ":actorId", actorId);
+        AddParameter(command, ":eventType", logType.ToDatabaseInteger());
+        AddParameter(command, ":description", description);
         
         command.ExecuteNonQuery();
     }
     
     public string? GetUserIdByUserName(string username)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -268,7 +273,7 @@ public class Store : IStore
                 WHERE NormalizedUserName = :username
             """;
         
-        command.Parameters.AddWithValue(":username", username.Normalize().ToUpperInvariant());
+        AddParameter(command, ":username", username.Normalize().ToUpperInvariant());
         
         using var reader = command.ExecuteReader();
         if (reader.Read())
@@ -283,7 +288,7 @@ public class Store : IStore
     [Authorize(Roles = "Admin")]
     public IEnumerable<AccountLog> GetAccountLogs(string userId)
     {
-        using var connection = new SqliteConnection("DataSource=Data\\app.db;Cache=Shared");
+        using DbConnection connection = CreateConnection();
         connection.Open();
         
         var command = connection.CreateCommand();
@@ -300,7 +305,7 @@ public class Store : IStore
                 ORDER BY log.Timestamp DESC
             """;
         
-        command.Parameters.AddWithValue(":userId", userId);
+        AddParameter(command, ":userId", userId);
         
         using var reader = command.ExecuteReader();
         var logs = new List<AccountLog>();

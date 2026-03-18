@@ -11,6 +11,17 @@ namespace WeddingWebsite.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "TodoGroups",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoGroups", x => x.Id);
+                });
+            migrationBuilder.CreateTable(
                 name: "TodoItems",
                 columns: table => new
                 {
@@ -28,17 +39,6 @@ namespace WeddingWebsite.Migrations
                     table.ForeignKey("FK_TodoItems_TodoGroups_GroupId", x => x.GroupId, "TodoGroups", "Id");
                 });
             
-            migrationBuilder.CreateTable(
-                name: "TodoGroups",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TodoGroups", x => x.Id);
-                });
         }
 
         /// <inheritdoc />

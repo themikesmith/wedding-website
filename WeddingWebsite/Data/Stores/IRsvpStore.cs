@@ -2,7 +2,7 @@
 
 namespace WeddingWebsite.Data.Stores;
 
-public interface IRsvpStore
+public interface IRsvpStore : IDataStore
 {
     /// <summary>
     /// Submit an RSVP for the given user. Data is a list of length 21 (or fewer), with each position containing the

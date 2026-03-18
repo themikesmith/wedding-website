@@ -23,7 +23,7 @@ namespace WeddingWebsite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Guests", x => new { x.LogId });
+                    table.PrimaryKey("PK_AccountLogs", x => new { x.LogId });
                     table.ForeignKey(
                         name: "FK_AccountLog_AspNetUsers_AffectedUserId",
                         column: x => x.AffectedUserId,

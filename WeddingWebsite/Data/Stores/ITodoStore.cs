@@ -2,7 +2,7 @@
 
 namespace WeddingWebsite.Data.Stores;
 
-public interface ITodoStore
+public interface ITodoStore : IDataStore
 {
     void AddTodoItem(string id);
     void RenameTodoItem(string id, string newText);

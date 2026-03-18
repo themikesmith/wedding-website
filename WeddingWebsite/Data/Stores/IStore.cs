@@ -4,7 +4,7 @@ using WeddingWebsite.Models.Accounts;
 
 namespace WeddingWebsite.Data.Stores;
 
-public interface IStore
+public interface IStore : IDataStore
 {
     /// <summary>
     /// Retrieve all guests associated with a specific user. Each guest is associated with exactly one user.
