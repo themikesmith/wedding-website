@@ -164,7 +164,7 @@
         Guests = AccountService.GetOwnGuests(user);
         
         UserName = user.Identity?.Name ?? "";
-        var account = UserManager.FindByNameAsync(UserName).Result;
+        var account = await UserManager.FindByNameAsync(UserName);
         Email = account?.Email ?? "";
     }
 
@@ -173,7 +173,7 @@
         ShowChangePassword = true;
     }
     
-    private void ChangePassword()
+    private async Task ChangePassword()
     {
         if (Config.DemoMode.IsEnabled)
         {
@@ -186,22 +186,22 @@
             return;
         }
         
-        var account = UserManager.FindByNameAsync(UserName).Result;
+        var account = await UserManager.FindByNameAsync(UserName);
         if (account == null)
         {
             ErrorText = "Could not find your account.";
             return;
         }
         
-        var passwordValid = UserManager.CheckPasswordAsync(account, ChangePasswordInput.OldPassword).Result;
+        var passwordValid = await UserManager.CheckPasswordAsync(account, ChangePasswordInput.OldPassword);
         if (!passwordValid)
         {
             ErrorText = "Access denied - The current password is incorrect.";
             return;
         }
         
-        var token = UserManager.GeneratePasswordResetTokenAsync(account).Result;
-        var result = UserManager.ResetPasswordAsync(account, token, ChangePasswordInput.NewPassword).Result;
+        var token = await UserManager.GeneratePasswordResetTokenAsync(account);
+        var result = await UserManager.ResetPasswordAsync(account, token, ChangePasswordInput.NewPassword);
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
