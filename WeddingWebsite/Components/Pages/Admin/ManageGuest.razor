@@ -157,6 +157,8 @@
     
     private void ApplyNameChange()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         if (Account is null || Guest is null) return;
 
         var oldName = Guest.Name.Full;
@@ -178,6 +180,8 @@
 
     private void DeleteGuest()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         Logger.LogInformation($"Deleting guest {GuestId} for user {UserId}. Full data: {Guest?.ToString() ?? "null"}");
         AdminService.DeleteGuest(GuestId);
         if (LoggedInUser is not null)
@@ -194,6 +198,8 @@
     
     private void DeleteRsvp()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         Logger.LogInformation($"Deleting RSVP for guest {GuestId} for user {UserId}. Full data: {RsvpResponse?.ToString() ?? "null"}");
         RsvpService.DeleteRsvp(GuestId);
         RsvpResponse = null;

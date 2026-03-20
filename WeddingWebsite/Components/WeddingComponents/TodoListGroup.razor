@@ -1,10 +1,12 @@
-﻿    @using WeddingWebsite.Core
+﻿    @using System.Security.Claims
+    @using WeddingWebsite.Core
 @using WeddingWebsite.Components.Containers
 @using WeddingWebsite.Components.Elements
 @using WeddingWebsite.Models.Todo
 @using WeddingWebsite.Services
 
 @inject ITodoService TodoService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <Box CustomCss="margin-bottom: 10px">
     @if (Items.GetGroup() != null) {
@@ -47,6 +49,7 @@
 @code {
     private bool IsEditing { get; set; } = false;
     private string Name { get; set; } = "";
+    private ClaimsPrincipal CurrentUser { get; set; } = new();
     
     [Parameter]
     public required IEnumerable<TodoItem> Items { get; set; }
@@ -54,8 +57,15 @@
     [Parameter]
     public Action? ParentStateHasChanged { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CurrentUser = authState.User;
+    }
+
     private void Ungroup()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         if (Items.Count() > 1) return;
         var item = Items.First();
         TodoService.RemoveGroupFromItem(item.Id);
@@ -64,6 +74,7 @@
     
     private void AddNewItem()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         if (Items.GetGroup() == null) return;
         TodoService.AddNewItem(Items.GetGroup()?.Id);
         ParentStateHasChanged?.Invoke();
@@ -84,6 +95,7 @@
     
     private void SaveEdits()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         var groupId = Items.GetGroup()?.Id;
         if (groupId == null) return;
         TodoService.RenameGroup(groupId, Name);

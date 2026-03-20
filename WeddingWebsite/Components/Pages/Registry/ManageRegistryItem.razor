@@ -1,6 +1,7 @@
 ﻿@page "/Registry/Edit/{ItemId}"
 
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
 @using WeddingWebsite.Components.Layouts
 @using WeddingWebsite.Components.Containers
 @using WeddingWebsite.Models.Registry
@@ -8,8 +9,10 @@
 
 @inject IRegistryService RegistryService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @layout SimpleLayout
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Edit Registry Item</PageTitle>
 
@@ -178,8 +181,11 @@
         };
     }
     
-    private void OnSubmit()
+    private async Task OnSubmit()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+
         var item = RegistryService.GetRegistryItemById(ItemId);
         if (item == null)
         {
@@ -214,8 +220,11 @@
         NavigationManager.NavigateTo($"/Registry/{ItemId}");
     }
     
-    private void DeleteItem()
+    private async Task DeleteItem()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+
         Item = RegistryService.GetRegistryItemById(ItemId);
         if (Item == null)
         {

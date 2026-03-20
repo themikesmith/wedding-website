@@ -5,6 +5,7 @@
 
 @inject IRsvpService RsvpService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudForm>
     @foreach (var question in Questions.Questions)
@@ -73,11 +74,11 @@
         {
             <h2>Are you sure?</h2>
             <p>Take a moment to double check all of your answers. After submitting, you will not be able to change them yourself.</p>
-            <Button OnClick="Submit">Submit</Button>
+            <Button OnClickAsync="Submit">Submit</Button>
         }
     } else if (!ReadOnly && EditMode)
     {
-        <Button OnClick="Submit">Save Changes</Button>
+        <Button OnClickAsync="Submit">Save Changes</Button>
     }
     
     @if (ValidationIssues.Any() || Success == false)
@@ -188,8 +189,11 @@
         StateHasChanged();
     }
 
-    private void Submit()
+    private async Task Submit()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         ValidationIssues = Questions.Validate(Answers.ToList());
         if (ValidationIssues.Any())
         {

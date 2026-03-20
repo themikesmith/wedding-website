@@ -1,10 +1,12 @@
 ﻿@using WeddingWebsite.Models.Todo
 @using WeddingWebsite.Services
 @using WeddingWebsite.Components.Elements
+@using System.Security.Claims
 
 @inject ITodoService TodoService
 @inject IAdminService AdminService
 @inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (Item == null)
 {
@@ -111,9 +113,13 @@
     private bool IsEditing { get; set; }
     private string Text { get; set; } = "";
     private string OwnerUserName { get; set; } = "";
+    private ClaimsPrincipal CurrentUser { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CurrentUser = authState.User;
+
         PossibleOwnerUserNames = AdminService.GetAllAccounts()
             .Where(a => a.UserName != null)
             .Select(a => a.UserName!)
@@ -151,6 +157,7 @@
     
     private void SaveEdits()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         ApplyToItem(item => TodoService.RenameItem(item.Id, Text));
         ApplyToItem(item => TodoService.SetItemOwnerByUserName(item.Id, string.IsNullOrWhiteSpace(OwnerUserName) ? null : OwnerUserName));
         IsEditing = false;
@@ -159,6 +166,7 @@
     
     private void CancelEdits()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         IsEditing = false;
         if (Item?.Text == null)
         {
@@ -212,6 +220,7 @@
 
     private void MarkItemAsCompleted()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         var undoAction = ApplyToItemWithUndoAction(item => TodoService.MarkItemAsCompleted(item.Id));
         Snackbar.Add($"Completed: {Item?.Text}", Severity.Success, config =>
         {
@@ -227,6 +236,7 @@
     
     private void MarkItemAsWaiting(int days = 3)
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         var undoAction = ApplyToItemWithUndoAction(item => TodoService.MarkItemAsWaiting(item.Id, TimeSpan.FromDays(days)));
         Snackbar.Add($"Snoozed for {days} days: {Item?.Text}", Severity.Info, config =>
         {
@@ -242,12 +252,14 @@
     
     private void MarkItemAsActionRequired()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         ApplyToItem(item => TodoService.MarkItemAsActionRequired(item.Id));
         Snackbar.Add($"Marked as action required: {Item?.Text}", Severity.Warning);
     }
     
     private void Group()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         ApplyToItem(item => TodoService.GroupItem(item.Id));
         if (Text == (Item?.Text ?? "") && OwnerUserName == (Item?.OwnerUserName ?? ""))
         {
@@ -257,6 +269,7 @@
     
     private void Delete()
     {
+        if (!CurrentUser.IsInRole("Admin")) return;
         ApplyToItem(item => TodoService.DeleteItem(item.Id));
         IsEditing = false;
     }

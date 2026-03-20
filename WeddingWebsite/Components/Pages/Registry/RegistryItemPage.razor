@@ -159,7 +159,7 @@
                     @if (Notes != (Item.GetClaimByUser(UserId).Notes ?? ""))
                     {
                         <p class="text-danger claim-item-description">@StringProvider.YouHaveUnsavedChanges</p>
-                        <Button OnClick="SaveNotes">@StringProvider.SaveNotes</Button>
+                        <Button OnClickAsync="SaveNotes">@StringProvider.SaveNotes</Button>
                     }
                 } else if (UserId != null && Item.NumClaimsByUser(UserId) > 0)
                 {
@@ -175,7 +175,7 @@
                         }
                         @if (Item.MaxQuantity > 1)
                         {
-                            <p class="claim-item-description">@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="RemoveClaim">[@StringProvider.Undo]</a></p>
+                            <p class="claim-item-description">@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="async () => await RemoveClaim()">[@StringProvider.Undo]</a></p>
                         }
                         @if (Item.IsDonation)
                         {
@@ -201,15 +201,15 @@
                         <h2>@StringProvider.SelectDeliveryAddress</h2>
                         @if (Item.MaxQuantity > 1)
                         {
-                            <p>@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="RemoveClaim">[@StringProvider.Undo]</a></p>
+                            <p>@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="async () => await RemoveClaim()">[@StringProvider.Undo]</a></p>
                         }
-                        <p class="claim-item-description">@StringProvider.SelectedPurchaseMethod(Item.GetPurchaseMethodByUser(UserId).Name) <a @onclick="() => ChoosePurchaseMethod(null)">[@StringProvider.Undo]</a></p>
+                        <p class="claim-item-description">@StringProvider.SelectedPurchaseMethod(Item.GetPurchaseMethodByUser(UserId).Name) <a @onclick="async () => await ChoosePurchaseMethod(null)">[@StringProvider.Undo]</a></p>
                         <p class="claim-item-description">@StringProvider.SelectDeliveryAddressDescription</p>
                         @if (Item.GetPurchaseMethodByUser(UserId).AllowDeliverToUs)
                         {
                             @foreach (var address in DeliveryAddresses)
                             {
-                                <a class="purchase-option" @onclick="() => ChooseDeliveryAddress(address)">
+                                <a class="purchase-option" @onclick="async () => await ChooseDeliveryAddress(address)">
                                     <Box>
                                         <p class="purchase-option-name">@address</p>
                                     </Box>
@@ -218,7 +218,7 @@
                         }
                         @if (Item.GetPurchaseMethodByUser(UserId).AllowBringOnDay)
                         {
-                            <a class="purchase-option" @onclick="() => ChooseDeliveryAddress(DeliveryAddressBringOnDay)">
+                            <a class="purchase-option" @onclick="async () => await ChooseDeliveryAddress(DeliveryAddressBringOnDay)">
                                 <Box>
                                     <p class="purchase-option-name">@StringProvider.BringOnTheDay</p>
                                 </Box>
@@ -230,12 +230,12 @@
                         <h2>@StringProvider.ItemReadyToPurchase</h2>
                         @if (Item.MaxQuantity > 1)
                         {
-                            <p>@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="RemoveClaim">[@StringProvider.Undo]</a></p>
+                            <p>@StringProvider.SelectedQuantity(Item.GetClaimByUser(UserId).Quantity) <a @onclick="async () => await RemoveClaim()">[@StringProvider.Undo]</a></p>
                         }
-                        <p>@StringProvider.SelectedPurchaseMethod(Item.GetPurchaseMethodByUser(UserId).Name) <a @onclick="() => {ChoosePurchaseMethod(null);ChooseDeliveryAddress(null);}">[@StringProvider.Undo]</a></p>
+                        <p>@StringProvider.SelectedPurchaseMethod(Item.GetPurchaseMethodByUser(UserId).Name) <a @onclick="async () => { await ChoosePurchaseMethod(null); await ChooseDeliveryAddress(null); }">[@StringProvider.Undo]</a></p>
                         @if (Item.GetPurchaseMethodByUser(UserId).AllowDeliverToUs || Item.GetPurchaseMethodByUser(UserId).AllowBringOnDay)
                         {
-                            <p>@StringProvider.SelectedDeliveryAddress(Item.GetClaimByUser(UserId).DeliveryAddress) <a @onclick="() => ChooseDeliveryAddress(null)">[@StringProvider.Undo]</a></p>
+                            <p>@StringProvider.SelectedDeliveryAddress(Item.GetClaimByUser(UserId).DeliveryAddress) <a @onclick="async () => await ChooseDeliveryAddress(null)">[@StringProvider.Undo]</a></p>
                         }
                         <p style="margin-top: 10px" class="claim-item-description">@StringProvider.ItemReadyToPurchaseDescription</p>
 
@@ -248,7 +248,7 @@
                             <p>@StringProvider.CustomPurchaseInstructions(Item.GetPurchaseMethodByUser(UserId).Instructions)</p>
                         }
                         <div style="margin-bottom: 10px"></div>
-                        <Button OnClick="MarkCompleted">@StringProvider.MarkAsCompleted</Button>
+                        <Button OnClickAsync="MarkCompleted">@StringProvider.MarkAsCompleted</Button>
                     }
                     @if (Item.IsDonation)
                     {
@@ -258,7 +258,7 @@
                     {
                         <p class="claim-item-description" style="margin-top: 10px">@StringProvider.UnclaimDescription</p>
                     }
-                    <Button OnClick="RemoveClaim">@StringProvider.Unclaim</Button>
+                    <Button OnClickAsync="RemoveClaim">@StringProvider.Unclaim</Button>
                     
                 } else if (Item.IsFullyClaimed())
                 {
@@ -297,11 +297,11 @@
                     }
                     @if (Item.AllowsPartialContributions)
                     {
-                        <Button OnClick="ClaimItem">@StringProvider.Contribute</Button>
+                        <Button OnClickAsync="ClaimItem">@StringProvider.Contribute</Button>
                     }
                     else
                     {
-                        <Button OnClick="ClaimItem">@StringProvider.Claim</Button>
+                        <Button OnClickAsync="ClaimItem">@StringProvider.Claim</Button>
                     }
                 }
                 <p class="text-danger">@ErrorText</p>
@@ -331,12 +331,12 @@
                             <p style="margin-bottom: 5px"><b>Notes:</b> @claim.Notes</p>
                             @if (claim.IsCompleted)
                             {
-                                <Button OnClick="() => { RegistryService.MarkClaimAsNotCompleted(Item.Id, claim.UserId); Item = RegistryService.GetRegistryItemById(ItemId); StateHasChanged(); }">Unmark as Completed</Button>
+                                <Button OnClickAsync="() => AdminUnmarkClaimAsCompleted(claim.UserId)">Unmark as Completed</Button>
                             }
                             else
                             {
-                                <Button OnClick="() => { RegistryService.MarkClaimAsCompleted(Item.Id, claim.UserId); Item = RegistryService.GetRegistryItemById(ItemId); StateHasChanged(); }">Mark as Completed</Button>
-                                <Button OnClick="() => { RegistryService.UnclaimRegistryItem(Item.Id, claim.UserId); Item = RegistryService.GetRegistryItemById(ItemId); StateHasChanged(); }">Remove Claim (cannot be undone)</Button>
+                                <Button OnClickAsync="() => AdminMarkClaimAsCompleted(claim.UserId)">Mark as Completed</Button>
+                                <Button OnClickAsync="() => AdminRemoveClaim(claim.UserId)">Remove Claim (cannot be undone)</Button>
                             }
                         </Box>
                     }
@@ -389,8 +389,11 @@
         }
     }
     
-    private void ClaimItem()
+    private async Task ClaimItem()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (Item.IsFullyClaimed())
         {
@@ -458,8 +461,11 @@
         StateHasChanged();
     }
     
-    private void RemoveClaim()
+    private async Task RemoveClaim()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (UserId == null)
         {
@@ -477,8 +483,11 @@
         StateHasChanged();
     }
     
-    private void ChoosePurchaseMethod(string? methodId)
+    private async Task ChoosePurchaseMethod(string? methodId)
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (UserId == null)
         {
@@ -492,8 +501,11 @@
         StateHasChanged();
     }
 
-    private void ChooseDeliveryAddress(string? address)
+    private async Task ChooseDeliveryAddress(string? address)
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (UserId == null)
         {
@@ -507,8 +519,11 @@
         StateHasChanged();
     }
 
-    private void MarkCompleted()
+    private async Task MarkCompleted()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (UserId == null)
         {
@@ -540,8 +555,11 @@
         StateHasChanged();
     }
     
-    private void SaveNotes()
+    private async Task SaveNotes()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Item == null) return;
         if (UserId == null)
         {
@@ -551,6 +569,39 @@
         }
         
         RegistryService.SetClaimNotes(Item.Id, UserId, Notes == "" ? null : Notes);
+        Item = RegistryService.GetRegistryItemById(ItemId);
+        StateHasChanged();
+    }
+
+    private async Task AdminUnmarkClaimAsCompleted(string claimUserId)
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+        if (Item == null) return;
+
+        RegistryService.MarkClaimAsNotCompleted(Item.Id, claimUserId);
+        Item = RegistryService.GetRegistryItemById(ItemId);
+        StateHasChanged();
+    }
+
+    private async Task AdminMarkClaimAsCompleted(string claimUserId)
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+        if (Item == null) return;
+
+        RegistryService.MarkClaimAsCompleted(Item.Id, claimUserId);
+        Item = RegistryService.GetRegistryItemById(ItemId);
+        StateHasChanged();
+    }
+
+    private async Task AdminRemoveClaim(string claimUserId)
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+        if (Item == null) return;
+
+        RegistryService.UnclaimRegistryItem(Item.Id, claimUserId);
         Item = RegistryService.GetRegistryItemById(ItemId);
         StateHasChanged();
     }

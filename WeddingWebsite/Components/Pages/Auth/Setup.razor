@@ -16,6 +16,7 @@
 @inject SignInManager<Account> SignInManager
 @inject IdentityRedirectManager RedirectManager
 @inject RoleManager<IdentityRole> RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @attribute [AllowAnonymous]
 
@@ -92,6 +93,10 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var usersExist = await UserManager.Users.AnyAsync();
+        if (usersExist && !authState.User.IsInRole("Admin")) return;
+
         // Check if there are any users already - if so, don't allow setup
         if (await RedirectIfUsersExist()) return;
         

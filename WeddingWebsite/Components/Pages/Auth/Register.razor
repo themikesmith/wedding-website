@@ -19,6 +19,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IAdminService AdminService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @attribute [Authorize ( Roles = "Admin") ]
 
@@ -105,6 +106,9 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+
         var user = CreateUser();
         
         if (!Input.Email.IsNullOrEmpty())

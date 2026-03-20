@@ -249,6 +249,8 @@
 
     private async Task ApplyEmailChange()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         if (Account is null)
         {
             return;
@@ -271,6 +273,8 @@
     
     private async Task ApplyUserNameChange()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         if (Account is null)
         {
             return;
@@ -293,6 +297,8 @@
 
     private async Task ApplyPasswordChange()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         if (Account is null) return;
         
         var token = await UserManager.GeneratePasswordResetTokenAsync(Account);
@@ -312,6 +318,8 @@
 
     private void AddNewGuest()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Admin")) return;
+
         if (Account is null) return;
         if (NewGuestName == "") return;
 
@@ -331,6 +339,8 @@
     [Authorize (Roles = "Owner")]
     private async Task DemoteUser()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Owner")) return;
+
         if (Account is null) return;
         var result = await UserManager.RemoveFromRoleAsync(Account, "Admin");
         if (!result.Succeeded)
@@ -349,6 +359,8 @@
     [Authorize (Roles = "Owner")]
     private async Task PromoteUser()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Owner")) return;
+
         if (Account is null) return;
         var result = await UserManager.AddToRoleAsync(Account, "Admin");
         if (!result.Succeeded)
@@ -372,6 +384,8 @@
     [Authorize (Roles = "Owner")]
     private async Task DeleteAccount()
     {
+        if (LoggedInUser is null || !LoggedInUser.IsInRole("Owner")) return;
+
         if (Account is null) return;
         
         if (IsOwner)

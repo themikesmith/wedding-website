@@ -175,6 +175,9 @@
     
     private async Task ChangePassword()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin") && !(authState.User.Identity?.IsAuthenticated ?? false)) return;
+
         if (Config.DemoMode.IsEnabled)
         {
             ErrorText = "Changing password is not permitted in demo mode.";

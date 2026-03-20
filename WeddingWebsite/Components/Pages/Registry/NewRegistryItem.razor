@@ -11,6 +11,7 @@
 @inject IRegistryService RegistryService
 @inject NavigationManager NavigationManager
 @inject IWebsiteConfig Config
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @attribute [Authorize(Roles = "Admin")]
 
@@ -107,8 +108,11 @@
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
-    private void OnSubmit()
+    private async Task OnSubmit()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (!authState.User.IsInRole("Admin")) return;
+
         if (Input.Cost == null) return;
         if (Config.DemoMode.IsEnabled)
         {
