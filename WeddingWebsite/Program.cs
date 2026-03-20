@@ -63,7 +63,7 @@ builder.Services.AddScoped<IRegistryService, RegistryService>();
 builder.Services.AddScoped<ITodoService, TodoService>();
 builder.Services.AddScoped<IStore, Store>();
 builder.Services.AddScoped<IRsvpStore, RsvpStore>();
-builder.Services.AddScoped<IRegistryStore, RegistryStore>();
+builder.Services.AddScoped<IRegistryStore, RegistryStoreEf>();  // Using EF Core LINQ implementation
 builder.Services.AddScoped<ITodoStore, TodoStore>();
 
 builder.Services.AddRazorComponents()

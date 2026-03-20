@@ -39,7 +39,7 @@
         <label for="username">Username</label>
         <span class="flex-grow"></span>
         <input @bind-value="UserName" id="username" class="mr @UserNameDiffers" />
-        @if (!IsUserOwner())
+        @if (!IsOwner)
         {
             <button class="button" @onclick="ApplyUserNameChange">Apply</button>
         }
@@ -60,7 +60,7 @@
         <button class="button" @onclick="ApplyEmailChange">Apply</button>
     </div>
 
-    @if (!IsUserOwner())
+    @if (!IsOwner)
     {
         <div class="flex-container mb">
             <label for="new-password">New Password</label>
@@ -92,10 +92,10 @@
     <h2>Permissions</h2>
     <AuthorizeView Roles="Owner">
         <Authorized>
-            @if (IsUserAdmin())
+            @if (IsAdmin)
             {
                 <p>This user is an administrator.</p>
-                @if (IsUserOwner())
+                @if (IsOwner)
                 {
                     <p>This user is an owner. To modify owners, you will need to run manual SQL queries.</p>
                 }
@@ -111,11 +111,11 @@
             }
         </Authorized>
         <NotAuthorized>
-            @if (IsUserOwner())
+            @if (IsOwner)
             {
                 <p>Role: Owner.</p>
             }
-            else if (IsUserAdmin())
+            else if (IsAdmin)
             {
                 <p>Role: Admin.</p>
             }
@@ -151,7 +151,7 @@
 </MudTable>
 
 <div class="narrow-section">
-    @if (!IsUserOwner())
+    @if (!IsOwner)
     {
         <AuthorizeView Roles="Owner">
             <Authorized>
@@ -195,6 +195,8 @@
     private string PasswordDiffers => NewPassword == "" ? "" : "input-error";
     
     private int DeletePressedCount { get; set; } = 0;
+    private bool IsAdmin { get; set; }
+    private bool IsOwner { get; set; }
     
     private ClaimsPrincipal? LoggedInUser { get; set; }
 
@@ -212,9 +214,27 @@
             ErrorText = "Could not find that user.";
             return;
         }
+
+        IsAdmin = await UserManager.IsInRoleAsync(Account, "Admin");
+        IsOwner = await UserManager.IsInRoleAsync(Account, "Owner");
         
-        Guests = AdminService.GetGuestsForAccount(Account.Id);
-        Logs = AdminService.GetAccountLogs(UserId);
+        try
+        {
+            Guests = AdminService.GetGuestsForAccount(Account.Id);
+        }
+        catch (Exception ex)
+        {
+            ErrorText = $"Failed to load guests: {ex.Message}";
+        }
+
+        try
+        {
+            Logs = AdminService.GetAccountLogs(UserId);
+        }
+        catch (Exception ex)
+        {
+            ErrorText = $"Failed to load account logs: {ex.Message}";
+        }
     }
     
     private void RowClicked(TableRowClickEventArgs<GuestWithId> args)
@@ -306,17 +326,7 @@
         Logs = AdminService.GetAccountLogs(UserId);
     }
     
-    private bool IsUserAdmin()
-    {
-        if (Account is null) return false;
-        return UserManager.IsInRoleAsync(Account, "Admin").Result;
-    }
-    
-    private bool IsUserOwner()
-    {
-        if (Account is null) return false;
-        return UserManager.IsInRoleAsync(Account, "Owner").Result;
-    }
+
 
     [Authorize (Roles = "Owner")]
     private void DemoteUser()
@@ -329,6 +339,7 @@
         } 
         else
         {
+            IsAdmin = false;
             if (LoggedInUser is null) return;
             AccountService.Log(LoggedInUser, AccountLogType.ChangePermissions, "Demoted from Admin to User", UserId);
             Logs = AdminService.GetAccountLogs(UserId);
@@ -346,6 +357,7 @@
         }
         else
         {
+            IsAdmin = true;
             if (LoggedInUser is null) return;
             AccountService.Log(LoggedInUser, AccountLogType.ChangePermissions, "Promoted from User to Admin", UserId);
             Logs = AdminService.GetAccountLogs(UserId);
@@ -362,7 +374,7 @@
     {
         if (Account is null) return;
         
-        if (IsUserOwner())
+        if (IsOwner)
         {
             ErrorText = "You cannot delete an owner account.";
             return;

@@ -45,8 +45,23 @@ public abstract class DataStoreBase : IDataStore
             return new NpgsqlConnection(connString);
         }
 
-        // Default to SQLite
-        return new SqliteConnection(connString);
+        // SQLite detection: Data Source= keyword, :memory: literal, or file extension
+        if (connString.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase) ||
+            connString.StartsWith("DataSource=", StringComparison.OrdinalIgnoreCase) ||
+            connString.IndexOf(":memory:", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            connString.EndsWith(".db", StringComparison.OrdinalIgnoreCase) ||
+            connString.EndsWith(".sqlite", StringComparison.OrdinalIgnoreCase) ||
+            connString.EndsWith(".sqlite3", StringComparison.OrdinalIgnoreCase))
+        {
+            return new SqliteConnection(connString);
+        }
+
+        // Neither pattern matched — fail loudly rather than silently guessing.
+        throw new InvalidOperationException(
+            $"Could not determine database provider from connection string. " +
+            $"Expected PostgreSQL (contains 'Host=' or starts with 'postgresql://') " +
+            $"or SQLite (contains 'Data Source=' or ends with '.db'). " +
+            $"Connection string prefix: '{connString[..Math.Min(60, connString.Length)]}'");
     }
 
     /// <summary>

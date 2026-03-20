@@ -1,20 +1,58 @@
 ﻿namespace WeddingWebsite.Models.Registry;
 
-public record RegistryItem(
-    string Id,
-    string GenericName,
-    string Name,
-    string? Description,
-    string? ImageUrl,
-    IEnumerable<RegistryItemPurchaseMethod> PurchaseMethods,
-    IEnumerable<RegistryItemClaim> Claims,
-    int MaxQuantity = 1,
-    int Priority = 0,
-    bool Hide = false,
-    bool AllowsPartialContributions = false,
-    bool IsDonation = false
-)
+public record RegistryItem
 {
+    // Primary properties (mapped to database columns)
+    public string Id { get; init; } = null!;
+    public string GenericName { get; init; } = null!;
+    public string Name { get; init; } = null!;
+    public string? Description { get; init; }
+    public string? ImageUrl { get; init; }
+    public int MaxQuantity { get; init; } = 1;
+    public int Priority { get; init; } = 0;
+    public bool Hide { get; init; } = false;
+    public bool AllowsPartialContributions { get; init; } = false;
+    public bool IsDonation { get; init; } = false;
+    
+    // Navigation properties (not bound to constructor by EF Core)
+    public ICollection<RegistryItemPurchaseMethod> PurchaseMethods { get; init; } = [];
+    public ICollection<RegistryItemClaim> Claims { get; init; } = [];
+
+    // Simplified constructor for EF Core LINQ queries (only scalar properties)
+    public RegistryItem()
+    {
+    }
+
+    // Full constructor for manual object creation
+    public RegistryItem(
+        string id,
+        string genericName,
+        string name,
+        string? description,
+        string? imageUrl,
+        IEnumerable<RegistryItemPurchaseMethod> purchaseMethods,
+        IEnumerable<RegistryItemClaim> claims,
+        int maxQuantity = 1,
+        int priority = 0,
+        bool hide = false,
+        bool allowsPartialContributions = false,
+        bool isDonation = false
+    )
+    {
+        Id = id;
+        GenericName = genericName;
+        Name = name;
+        Description = description;
+        ImageUrl = imageUrl;
+        PurchaseMethods = purchaseMethods.ToList();
+        Claims = claims.ToList();
+        MaxQuantity = maxQuantity;
+        Priority = priority;
+        Hide = hide;
+        AllowsPartialContributions = allowsPartialContributions;
+        IsDonation = isDonation;
+    }
+
     public int QuantityClaimed => Claims.Sum(c => c.Quantity);
     public decimal ClaimedAmount => Claims.Sum(c => c.Contribution);
     //public bool IsFullyClaimed => QuantityClaimed >= MaxQuantity;

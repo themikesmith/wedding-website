@@ -20,10 +20,10 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         using var transaction = connection.BeginTransaction();
         var cmd = connection.CreateCommand();
         cmd.Transaction = transaction;
-        cmd.CommandText = @"
-            INSERT INTO RegistryItems (Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation)
+        cmd.CommandText = """
+            INSERT INTO "RegistryItems" ("Id", "GenericName", "Name", "Description", "ImageUrl", "MaxQuantity", "Priority", "Hide", "AllowsPartialContributions", "IsDonation")
             VALUES (:id, :genericName, :name, :description, :imageUrl, :maxQuantity, :priority, :hide, :allowsPartialContributions, :isDonation);
-        ";
+            """;
         AddParameter(cmd, ":id", item.Id);
         AddParameter(cmd, ":genericName", item.GenericName);
         AddParameter(cmd, ":name", item.Name);
@@ -31,9 +31,9 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         AddParameter(cmd, ":imageUrl", item.ImageUrl ?? (object)DBNull.Value);
         AddParameter(cmd, ":maxQuantity", item.MaxQuantity);
         AddParameter(cmd, ":priority", item.Priority);
-        AddParameter(cmd, ":hide", item.Hide ? 1 : 0);
-        AddParameter(cmd, ":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
-        AddParameter(cmd, ":isDonation", item.IsDonation ? 1 : 0);
+        AddParameter(cmd, ":hide", item.Hide);
+        AddParameter(cmd, ":allowsPartialContributions", item.AllowsPartialContributions);
+        AddParameter(cmd, ":isDonation", item.IsDonation);
 
         cmd.ExecuteNonQuery();
 
@@ -49,18 +49,18 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         {
             var methodCmd = connection.CreateCommand();
             methodCmd.Transaction = transaction;
-            methodCmd.CommandText = @"
-                INSERT INTO RegistryItemPurchaseMethods
-                (Id, ItemId, Name, Cost, AllowBringOnDay, AllowDeliverToUs, Url, Instructions, DeliveryCost)
+            methodCmd.CommandText = """
+                INSERT INTO "RegistryItemPurchaseMethods"
+                ("Id", "ItemId", "Name", "Cost", "AllowBringOnDay", "AllowDeliverToUs", "Url", "Instructions", "DeliveryCost")
                 VALUES
                 (:id, :itemId, :name, :cost, :allowBringOnDay, :allowDeliverToUs, :url, :instructions, :deliveryCost);
-            ";
+                """;
             AddParameter(methodCmd, ":id", method.Id);
             AddParameter(methodCmd, ":itemId", registryItem.Id);
             AddParameter(methodCmd, ":name", method.Name);
             AddParameter(methodCmd, ":cost", method.Cost);
-            AddParameter(methodCmd, ":allowBringOnDay", method.AllowBringOnDay ? 1 : 0);
-            AddParameter(methodCmd, ":allowDeliverToUs", method.AllowDeliverToUs ? 1 : 0);
+            AddParameter(methodCmd, ":allowBringOnDay", method.AllowBringOnDay);
+            AddParameter(methodCmd, ":allowDeliverToUs", method.AllowDeliverToUs);
             AddParameter(methodCmd, ":url", method.Url ?? (object)DBNull.Value);
             AddParameter(methodCmd, ":instructions", method.Instructions ?? (object)DBNull.Value);
             AddParameter(methodCmd, ":deliveryCost", method.DeliveryCost);
@@ -78,19 +78,19 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         using var transaction = connection.BeginTransaction();
         var cmd = connection.CreateCommand();
         cmd.Transaction = transaction;
-        cmd.CommandText = @"
-            UPDATE RegistryItems
-            SET GenericName = :genericName,
-                Name = :name,
-                Description = :description,
-                ImageUrl = :imageUrl,
-                MaxQuantity = :maxQuantity,
-                Priority = :priority,
-                Hide = :hide,
-                AllowsPartialContributions = :allowsPartialContributions,
-                IsDonation = :isDonation
-            WHERE Id = :id;
-        ";
+        cmd.CommandText = """
+            UPDATE "RegistryItems"
+            SET "GenericName" = :genericName,
+                "Name" = :name,
+                "Description" = :description,
+                "ImageUrl" = :imageUrl,
+                "MaxQuantity" = :maxQuantity,
+                "Priority" = :priority,
+                "Hide" = :hide,
+                "AllowsPartialContributions" = :allowsPartialContributions,
+                "IsDonation" = :isDonation
+            WHERE "Id" = :id;
+            """;
         AddParameter(cmd, ":id", item.Id);
         AddParameter(cmd, ":genericName", item.GenericName);
         AddParameter(cmd, ":name", item.Name);
@@ -98,9 +98,9 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         AddParameter(cmd, ":imageUrl", item.ImageUrl ?? (object)DBNull.Value);
         AddParameter(cmd, ":maxQuantity", item.MaxQuantity);
         AddParameter(cmd, ":priority", item.Priority);
-        AddParameter(cmd, ":hide", item.Hide ? 1 : 0);
-        AddParameter(cmd, ":allowsPartialContributions", item.AllowsPartialContributions ? 1 : 0);
-        AddParameter(cmd, ":isDonation", item.IsDonation ? 1 : 0);
+        AddParameter(cmd, ":hide", item.Hide);
+        AddParameter(cmd, ":allowsPartialContributions", item.AllowsPartialContributions);
+        AddParameter(cmd, ":isDonation", item.IsDonation);
 
         var rowsAffected = cmd.ExecuteNonQuery();
         if (rowsAffected == 0)
@@ -112,18 +112,20 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         var existingMethodIds = new HashSet<string>();
         var getMethodsCmd = connection.CreateCommand();
         getMethodsCmd.Transaction = transaction;
-        getMethodsCmd.CommandText = @"
-            SELECT Id
-            FROM RegistryItemPurchaseMethods
-            WHERE ItemId = :itemId;
-        ";
+        getMethodsCmd.CommandText = """
+            SELECT "Id"
+            FROM "RegistryItemPurchaseMethods"
+            WHERE "ItemId" = :itemId;
+            """;
         AddParameter(getMethodsCmd, ":itemId", item.Id);
-        using var reader = getMethodsCmd.ExecuteReader();
-        while (reader.Read())
+        using (var reader = getMethodsCmd.ExecuteReader())
         {
-            existingMethodIds.Add(reader.GetString(0));
+            while (reader.Read())
+            {
+                existingMethodIds.Add(reader.GetString(0));
+            }
         }
-        
+
         // Update or insert purchase methods
         foreach (var method in item.PurchaseMethods)
         {
@@ -132,23 +134,23 @@ public class RegistryStore : DataStoreBase, IRegistryStore
                 // Update existing method
                 var updateCmd = connection.CreateCommand();
                 updateCmd.Transaction = transaction;
-                updateCmd.CommandText = @"
-                    UPDATE RegistryItemPurchaseMethods
-                    SET Name = :name,
-                        Cost = :cost,
-                        AllowBringOnDay = :allowBringOnDay,
-                        AllowDeliverToUs = :allowDeliverToUs,
-                        Url = :url,
-                        Instructions = :instructions,
-                        DeliveryCost = :deliveryCost
-                    WHERE Id = :id AND ItemId = :itemId;
-                ";
+                updateCmd.CommandText = """
+                    UPDATE "RegistryItemPurchaseMethods"
+                    SET "Name" = :name,
+                        "Cost" = :cost,
+                        "AllowBringOnDay" = :allowBringOnDay,
+                        "AllowDeliverToUs" = :allowDeliverToUs,
+                        "Url" = :url,
+                        "Instructions" = :instructions,
+                        "DeliveryCost" = :deliveryCost
+                    WHERE "Id" = :id AND "ItemId" = :itemId;
+                    """;
                 AddParameter(updateCmd, ":id", method.Id);
                 AddParameter(updateCmd, ":itemId", item.Id);
                 AddParameter(updateCmd, ":name", method.Name);
                 AddParameter(updateCmd, ":cost", method.Cost);
-                AddParameter(updateCmd, ":allowBringOnDay", method.AllowBringOnDay ? 1 : 0);
-                AddParameter(updateCmd, ":allowDeliverToUs", method.AllowDeliverToUs ? 1 : 0);
+                AddParameter(updateCmd, ":allowBringOnDay", method.AllowBringOnDay);
+                AddParameter(updateCmd, ":allowDeliverToUs", method.AllowDeliverToUs);
                 AddParameter(updateCmd, ":url", method.Url ?? (object)DBNull.Value);
                 AddParameter(updateCmd, ":instructions", method.Instructions ?? (object)DBNull.Value);
                 AddParameter(updateCmd, ":deliveryCost", method.DeliveryCost);
@@ -159,18 +161,18 @@ public class RegistryStore : DataStoreBase, IRegistryStore
                 // Insert new method
                 var insertCmd = connection.CreateCommand();
                 insertCmd.Transaction = transaction;
-                insertCmd.CommandText = @"
-                    INSERT INTO RegistryItemPurchaseMethods
-                    (Id, ItemId, Name, Cost, AllowBringOnDay, AllowDeliverToUs, Url, Instructions, DeliveryCost)
+                insertCmd.CommandText = """
+                    INSERT INTO "RegistryItemPurchaseMethods"
+                    ("Id", "ItemId", "Name", "Cost", "AllowBringOnDay", "AllowDeliverToUs", "Url", "Instructions", "DeliveryCost")
                     VALUES
                     (:id, :itemId, :name, :cost, :allowBringOnDay, :allowDeliverToUs, :url, :instructions, :deliveryCost);
-                ";
+                    """;
                 AddParameter(insertCmd, ":id", method.Id);
                 AddParameter(insertCmd, ":itemId", item.Id);
                 AddParameter(insertCmd, ":name", method.Name);
                 AddParameter(insertCmd, ":cost", method.Cost);
-                AddParameter(insertCmd, ":allowBringOnDay", method.AllowBringOnDay ? 1 : 0);
-                AddParameter(insertCmd, ":allowDeliverToUs", method.AllowDeliverToUs ? 1 : 0);
+                AddParameter(insertCmd, ":allowBringOnDay", method.AllowBringOnDay);
+                AddParameter(insertCmd, ":allowDeliverToUs", method.AllowDeliverToUs);
                 AddParameter(insertCmd, ":url", method.Url ?? (object)DBNull.Value);
                 AddParameter(insertCmd, ":instructions", method.Instructions ?? (object)DBNull.Value);
                 AddParameter(insertCmd, ":deliveryCost", method.DeliveryCost);
@@ -185,10 +187,10 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         {
             var deleteCmd = connection.CreateCommand();
             deleteCmd.Transaction = transaction;
-            deleteCmd.CommandText = @"
-                DELETE FROM RegistryItemPurchaseMethods
-                WHERE Id = :id AND ItemId = :itemId;
-            ";
+            deleteCmd.CommandText = """
+                DELETE FROM "RegistryItemPurchaseMethods"
+                WHERE "Id" = :id AND "ItemId" = :itemId;
+                """;
             AddParameter(deleteCmd, ":id", methodId);
             AddParameter(deleteCmd, ":itemId", item.Id);
             deleteCmd.ExecuteNonQuery();
@@ -206,10 +208,10 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         using var transaction = connection.BeginTransaction();
         var cmd = connection.CreateCommand();
         cmd.Transaction = transaction;
-        cmd.CommandText = @"
-            DELETE FROM RegistryItems
-            WHERE Id = :id;
-        ";
+        cmd.CommandText = """
+            DELETE FROM "RegistryItems"
+            WHERE "Id" = :id;
+            """;
         AddParameter(cmd, ":id", itemId);
 
         var rowsAffected = cmd.ExecuteNonQuery();
@@ -225,34 +227,32 @@ public class RegistryStore : DataStoreBase, IRegistryStore
             connection.Open();
 
             var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation
-                FROM RegistryItems
-                WHERE Id = :id;
-            ";
+            cmd.CommandText = """
+                SELECT "Id", "GenericName", "Name", "Description", "ImageUrl", "MaxQuantity", "Priority", "Hide", "AllowsPartialContributions", "IsDonation"
+                FROM "RegistryItems"
+                WHERE "Id" = :id;
+                """;
             AddParameter(cmd, ":id", itemId);
 
-            using var reader = cmd.ExecuteReader();
-            if (!reader.Read())
+            string id, genericName, name;
+            string? description, imageUrl;
+            int maxQuantity, priority;
+            bool hide, allowsPartialContributions, isDonation;
+
+            using (var reader = cmd.ExecuteReader())
             {
-                return null;
+                if (!reader.Read()) return null;
+                id = reader.GetString(0);
+                genericName = reader.GetString(1);
+                name = reader.GetString(2);
+                description = reader.IsDBNull(3) ? null : reader.GetString(3);
+                imageUrl = reader.IsDBNull(4) ? null : reader.GetString(4);
+                maxQuantity = reader.GetInt32(5);
+                priority = reader.GetInt32(6);
+                hide = reader.GetBoolean(7);
+                allowsPartialContributions = reader.GetBoolean(8);
+                isDonation = reader.GetBoolean(9);
             }
-
-            var id = reader.GetString(0);
-            var genericName = reader.GetString(1);
-            var name = reader.GetString(2);
-            var description = reader.IsDBNull(3) ? null : reader.GetString(3);
-            var imageUrl = reader.IsDBNull(4) ? null : reader.GetString(4);
-            var maxQuantity = reader.GetInt32(5);
-            var priority = reader.GetInt32(6);
-            // TODO for postgres
-            // var hide = reader.GetBoolean(7);
-            // var allowsPartialContributions = reader.GetBoolean(8);
-            // var isDonation = reader.GetBoolean(9);
-
-            var hide = reader.GetInt64(7) != 0;
-            var allowsPartialContributions = reader.GetInt64(8) != 0;
-            var isDonation = reader.GetInt64(9) != 0;
 
             var purchaseMethods = GetPurchaseMethodsForItem(id);
             var claims = GetClaimsForItem(id, connection);
@@ -287,27 +287,29 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         var methods = new List<RegistryItemPurchaseMethod>();
 
         var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT Id, Name, Cost, AllowBringOnDay, AllowDeliverToUs, Url, Instructions, DeliveryCost
-            FROM RegistryItemPurchaseMethods
-            WHERE ItemId = :itemId;
-        ";
+        cmd.CommandText = """
+            SELECT "Id", "Name", "Cost", "AllowBringOnDay", "AllowDeliverToUs", "Url", "Instructions", "DeliveryCost"
+            FROM "RegistryItemPurchaseMethods"
+            WHERE "ItemId" = :itemId;
+            """;
         AddParameter(cmd, ":itemId", itemId);
 
-        using var reader = cmd.ExecuteReader();
-        while (reader.Read())
+        using (var reader = cmd.ExecuteReader())
         {
-            var method = new RegistryItemPurchaseMethod(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.GetDecimal(2),
-                reader.GetInt64(3) != 0,
-                reader.GetInt64(4) != 0,
-                reader.IsDBNull(5) ? null : reader.GetString(5),
-                reader.IsDBNull(6) ? null : reader.GetString(6),
-                reader.GetDecimal(7)
-            );
-            methods.Add(method);
+            while (reader.Read())
+            {
+                var method = new RegistryItemPurchaseMethod(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetDecimal(2),
+                    reader.GetBoolean(3),
+                    reader.GetBoolean(4),
+                    reader.IsDBNull(5) ? null : reader.GetString(5),
+                    reader.IsDBNull(6) ? null : reader.GetString(6),
+                    reader.GetDecimal(7)
+                );
+                methods.Add(method);
+            }
         }
 
         return methods;
@@ -326,28 +328,30 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         var claims = new List<RegistryItemClaim>();
 
         var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes, Contribution
-            FROM RegistryItemClaims
-            WHERE ItemId = :itemId;
-        ";
+        cmd.CommandText = """
+            SELECT "ItemId", "ClaimedBy", "PurchaseMethodId", "DeliveryAddress", "ClaimedAt", "CompletedAt", "Quantity", "Notes", "Contribution"
+            FROM "RegistryItemClaims"
+            WHERE "ItemId" = :itemId;
+            """;
         AddParameter(cmd, ":itemId", itemId);
 
-        using var reader = cmd.ExecuteReader();
-        while (reader.Read())
+        using (var reader = cmd.ExecuteReader())
         {
-            var claim = new RegistryItemClaim(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.IsDBNull(2) ? null : reader.GetString(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3),
-                new DateTime(reader.GetInt64(4), DateTimeKind.Utc),
-                reader.IsDBNull(5) ? null : new DateTime(reader.GetInt64(5), DateTimeKind.Utc),
-                reader.GetInt32(6),
-                reader.IsDBNull(7) ? null : reader.GetString(7),
-                reader.GetDecimal(8)
-            );
-            claims.Add(claim);
+            while (reader.Read())
+            {
+                var claim = new RegistryItemClaim(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.IsDBNull(2) ? null : reader.GetString(2),
+                    reader.IsDBNull(3) ? null : reader.GetString(3),
+                    reader.GetDateTime(4),
+                    reader.IsDBNull(5) ? null : reader.GetDateTime(5),
+                    reader.GetInt32(6),
+                    reader.IsDBNull(7) ? null : reader.GetString(7),
+                    reader.GetDecimal(8)
+                );
+                claims.Add(claim);
+            }
         }
 
         return claims;
@@ -361,50 +365,47 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT Id, GenericName, Name, Description, ImageUrl, MaxQuantity, Priority, Hide, AllowsPartialContributions, IsDonation
-            FROM RegistryItems
-            " + (includeHidden ? "" : "WHERE Hide = 0 ") + @"
-            ORDER BY Priority DESC, Name ASC;
-        ";
+        cmd.CommandText = """
+            SELECT "Id", "GenericName", "Name", "Description", "ImageUrl", "MaxQuantity", "Priority", "Hide", "AllowsPartialContributions", "IsDonation"
+            FROM "RegistryItems"
+            """ + (includeHidden ? "" : "WHERE NOT \"Hide\" ") + """
+            ORDER BY "Priority" DESC, "Name" ASC;
+            """;
 
-        await using var reader = await cmd.ExecuteReaderAsync();
-        while (reader.Read())
+        await using (var reader = await cmd.ExecuteReaderAsync())
         {
-            var id = reader.GetString(0);
-            var genericName = reader.GetString(1);
-            var name = reader.GetString(2);
-            var description = reader.IsDBNull(3) ? null : reader.GetString(3);
-            var imageUrl = reader.IsDBNull(4) ? null : reader.GetString(4);
-            var maxQuantity = reader.GetInt32(5);
-            var priority = reader.GetInt32(6);
-            // TODO for postgres
-            // var hide = reader.GetBoolean(7);
-            // var allowsPartialContributions = reader.GetBoolean(8);
-            // var isDonation = reader.GetBoolean(9);
+            while (await reader.ReadAsync())
+            {
+                var id = reader.GetString(0);
+                var genericName = reader.GetString(1);
+                var name = reader.GetString(2);
+                var description = reader.IsDBNull(3) ? null : reader.GetString(3);
+                var imageUrl = reader.IsDBNull(4) ? null : reader.GetString(4);
+                var maxQuantity = reader.GetInt32(5);
+                var priority = reader.GetInt32(6);
+                var hide = reader.GetBoolean(7);
+                var allowsPartialContributions = reader.GetBoolean(8);
+                var isDonation = reader.GetBoolean(9);
 
-            var hide = reader.GetInt64(7) != 0;
-            var allowsPartialContributions = reader.GetInt64(8) != 0;
-            var isDonation = reader.GetInt64(9) != 0;
+                var purchaseMethods = GetPurchaseMethodsForItem(id);
+                var claims = GetClaimsForItem(id);
 
-            var purchaseMethods = GetPurchaseMethodsForItem(id);
-            var claims = GetClaimsForItem(id);
-
-            var item = new RegistryItem(
-                id,
-                genericName,
-                name,
-                description,
-                imageUrl,
-                purchaseMethods,
-                claims,
-                maxQuantity,
-                priority,
-                hide,
-                allowsPartialContributions,
-                isDonation
-            );
-            items.Add(item);
+                var item = new RegistryItem(
+                    id,
+                    genericName,
+                    name,
+                    description,
+                    imageUrl,
+                    purchaseMethods,
+                    claims,
+                    maxQuantity,
+                    priority,
+                    hide,
+                    allowsPartialContributions,
+                    isDonation
+                );
+                items.Add(item);
+            }
         }
 
         return items;
@@ -431,15 +432,15 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         // Add the claim
         var claimCmd = connection.CreateCommand();
         claimCmd.Transaction = transaction;
-        claimCmd.CommandText = @"
-            INSERT INTO RegistryItemClaims
-            (ItemId, ClaimedBy, PurchaseMethodId, DeliveryAddress, ClaimedAt, CompletedAt, Quantity, Notes, Contribution)
+        claimCmd.CommandText = """
+            INSERT INTO "RegistryItemClaims"
+            ("ItemId", "ClaimedBy", "PurchaseMethodId", "DeliveryAddress", "ClaimedAt", "CompletedAt", "Quantity", "Notes", "Contribution")
             VALUES
             (:itemId, :claimedBy, NULL, NULL, :claimedAt, NULL, :quantity, NULL, :contribution);
-        ";
+            """;
         AddParameter(claimCmd, ":itemId", itemId);
         AddParameter(claimCmd, ":claimedBy", userId);
-        AddParameter(claimCmd, ":claimedAt", DateTime.UtcNow.Ticks);
+        AddParameter(claimCmd, ":claimedAt", DateTime.UtcNow);
         AddParameter(claimCmd, ":quantity", quantity);
         AddParameter(claimCmd, ":contribution", contribution);
 
@@ -459,11 +460,11 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         // Check if claim exists and is not completed
         var checkCmd = connection.CreateCommand();
         checkCmd.Transaction = transaction;
-        checkCmd.CommandText = @"
-            SELECT CompletedAt
-            FROM RegistryItemClaims
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy;
-        ";
+        checkCmd.CommandText = """
+            SELECT "CompletedAt"
+            FROM "RegistryItemClaims"
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy;
+            """;
         AddParameter(checkCmd, ":itemId", itemId);
         AddParameter(checkCmd, ":claimedBy", userId);
 
@@ -480,10 +481,10 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         // Delete the claim
         var deleteCmd = connection.CreateCommand();
         deleteCmd.Transaction = transaction;
-        deleteCmd.CommandText = @"
-            DELETE FROM RegistryItemClaims
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy;
-        ";
+        deleteCmd.CommandText = """
+            DELETE FROM "RegistryItemClaims"
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy;
+            """;
         AddParameter(deleteCmd, ":itemId", itemId);
         AddParameter(deleteCmd, ":claimedBy", userId);
 
@@ -499,11 +500,11 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var updateCmd = connection.CreateCommand();
-        updateCmd.CommandText = @"
-            UPDATE RegistryItemClaims
-            SET PurchaseMethodId = :purchaseMethodId
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy;
-        ";
+        updateCmd.CommandText = """
+            UPDATE "RegistryItemClaims"
+            SET "PurchaseMethodId" = :purchaseMethodId
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy;
+            """;
         AddParameter(updateCmd, ":purchaseMethodId", purchaseMethodId ?? (object)DBNull.Value);
         AddParameter(updateCmd, ":itemId", itemId);
         AddParameter(updateCmd, ":claimedBy", userId);
@@ -521,11 +522,11 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var updateCmd = connection.CreateCommand();
-        updateCmd.CommandText = @"
-            UPDATE RegistryItemClaims
-            SET DeliveryAddress = :address
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy;
-        ";
+        updateCmd.CommandText = """
+            UPDATE "RegistryItemClaims"
+            SET "DeliveryAddress" = :address
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy;
+            """;
         AddParameter(updateCmd, ":address", address ?? (object)DBNull.Value);
         AddParameter(updateCmd, ":itemId", itemId);
         AddParameter(updateCmd, ":claimedBy", userId);
@@ -542,12 +543,12 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var updateCmd = connection.CreateCommand();
-        updateCmd.CommandText = @"
-            UPDATE RegistryItemClaims
-            SET CompletedAt = :completedAt
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy AND CompletedAt IS NULL;
-        ";
-        AddParameter(updateCmd, ":completedAt", DateTime.UtcNow.Ticks);
+        updateCmd.CommandText = """
+            UPDATE "RegistryItemClaims"
+            SET "CompletedAt" = :completedAt
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy AND "CompletedAt" IS NULL;
+            """;
+        AddParameter(updateCmd, ":completedAt", DateTime.UtcNow);
         AddParameter(updateCmd, ":itemId", itemId);
         AddParameter(updateCmd, ":claimedBy", userId);
 
@@ -565,11 +566,11 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var updateCmd = connection.CreateCommand();
-        updateCmd.CommandText = @"
-            UPDATE RegistryItemClaims
-            SET CompletedAt = NULL
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy AND CompletedAt IS NOT NULL;
-        ";
+        updateCmd.CommandText = """
+            UPDATE "RegistryItemClaims"
+            SET "CompletedAt" = NULL
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy AND "CompletedAt" IS NOT NULL;
+            """;
         AddParameter(updateCmd, ":itemId", itemId);
         AddParameter(updateCmd, ":claimedBy", userId);
 
@@ -586,11 +587,11 @@ public class RegistryStore : DataStoreBase, IRegistryStore
         connection.Open();
 
         var updateCmd = connection.CreateCommand();
-        updateCmd.CommandText = @"
-            UPDATE RegistryItemClaims
-            SET Notes = :notes
-            WHERE ItemId = :itemId AND ClaimedBy = :claimedBy;
-        ";
+        updateCmd.CommandText = """
+            UPDATE "RegistryItemClaims"
+            SET "Notes" = :notes
+            WHERE "ItemId" = :itemId AND "ClaimedBy" = :claimedBy;
+            """;
         AddParameter(updateCmd, ":notes", notes ?? (object)DBNull.Value);
         AddParameter(updateCmd, ":itemId", itemId);
         AddParameter(updateCmd, ":claimedBy", userId);

@@ -37,6 +37,11 @@ public interface IStore : IDataStore
     public void DeleteGuest(string guestId);
     
     /// <summary>
+    /// Gets a single guest by their ID, optionally scoped to a specific account (defence-in-depth).
+    /// </summary>
+    public GuestWithId? GetGuestById(string guestId, string userId);
+
+    /// <summary>
     /// Finds the account ID containing this particular guest
     /// </summary>
     public string? GetAccountIdFromGuestId(string guestId);

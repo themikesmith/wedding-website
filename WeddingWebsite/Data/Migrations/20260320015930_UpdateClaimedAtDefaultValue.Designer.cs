@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WeddingWebsite.Data;
@@ -11,9 +12,11 @@ using WeddingWebsite.Data;
 namespace WeddingWebsite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320015930_UpdateClaimedAtDefaultValue")]
+    partial class UpdateClaimedAtDefaultValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,8 +276,7 @@ namespace WeddingWebsite.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("text")
-                        .HasColumnName("ClaimedBy");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ClaimedAt")
                         .ValueGeneratedOnAdd()
@@ -301,7 +303,12 @@ namespace WeddingWebsite.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(1);
 
+                    b.Property<string>("RegistryItemId")
+                        .HasColumnType("text");
+
                     b.HasKey("ItemId", "UserId");
+
+                    b.HasIndex("RegistryItemId");
 
                     b.ToTable("RegistryItemClaims");
                 });
@@ -340,12 +347,15 @@ namespace WeddingWebsite.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("RegistryItemId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Url")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("RegistryItemId");
 
                     b.ToTable("RegistryItemPurchaseMethods");
                 });
@@ -405,18 +415,14 @@ namespace WeddingWebsite.Migrations
                 {
                     b.HasOne("WeddingWebsite.Models.Registry.RegistryItem", null)
                         .WithMany("Claims")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegistryItemId");
                 });
 
             modelBuilder.Entity("WeddingWebsite.Models.Registry.RegistryItemPurchaseMethod", b =>
                 {
                     b.HasOne("WeddingWebsite.Models.Registry.RegistryItem", null)
                         .WithMany("PurchaseMethods")
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RegistryItemId");
                 });
 
             modelBuilder.Entity("WeddingWebsite.Models.Registry.RegistryItem", b =>

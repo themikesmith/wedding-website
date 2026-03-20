@@ -327,6 +327,7 @@
                             <p><b>Claimed At:</b> @claim.ClaimedAt.ToString()</p>
                             <p><b>Completed At:</b> @(claim.CompletedAt?.ToString() ?? "Not completed")</p>
                             <p><b>Quantity:</b> @claim.Quantity</p>
+                            <p><b>Contribution:</b> @StringProvider.CurrencyAmount(claim.Contribution)</p>
                             <p style="margin-bottom: 5px"><b>Notes:</b> @claim.Notes</p>
                             @if (claim.IsCompleted)
                             {
