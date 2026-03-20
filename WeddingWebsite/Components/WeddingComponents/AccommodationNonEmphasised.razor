@@ -6,7 +6,7 @@
 
 @if (!Hotels.Any()) return;
 
-<Box>
+<Box CustomCss="width: max-content; max-width: 100%; margin: 0 auto;">
     <h3>@StringProvider.OtherOptions</h3>
     <div class="other-options-table-wrapper">
         <AccommodationList Hotels="Hotels"></AccommodationList>

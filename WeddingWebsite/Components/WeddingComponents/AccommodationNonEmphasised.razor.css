@@ -14,8 +14,31 @@ h3 {
 }
 
 .other-options-table-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    overflow-x: auto;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+    padding: 0 0.8rem;
+    overflow-x: hidden;
+}
+
+.other-options-table-wrapper ::deep table {
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+}
+
+@media only screen and (max-width: 576px) {
+    .other-options-table-wrapper {
+        padding: 0 0.6rem;
+    }
+
+    .other-options-table-wrapper ::deep table {
+        width: auto;
+        table-layout: auto;
+    }
+
+    .other-options-table-wrapper ::deep td {
+        overflow-wrap: anywhere;
+    }
 }

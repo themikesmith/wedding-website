@@ -12,3 +12,43 @@ h3 {
 .buttons-container {
     margin-top: 10px;
 }
+
+.accommodation-emphasised-card ::deep .horizontal {
+    align-items: stretch;
+}
+
+.accommodation-emphasised-card ::deep .horizontal .top-content {
+    flex: 0 0 clamp(240px, 44%, 420px);
+    max-height: none;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accommodation-emphasised-card ::deep .horizontal .rounded-corner-box-inner,
+.accommodation-emphasised-card ::deep .horizontal .outlined-box-inner {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.accommodation-emphasised-card ::deep .top-content .website-element {
+    width: 100%;
+    height: 100%;
+    max-height: none !important;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+@media only screen and (max-width: 760px) {
+    .accommodation-emphasised-card ::deep .horizontal {
+        flex-direction: column;
+    }
+
+    .accommodation-emphasised-card ::deep .horizontal .top-content {
+        flex: 0 0 auto;
+        max-height: 350px;
+    }
+}

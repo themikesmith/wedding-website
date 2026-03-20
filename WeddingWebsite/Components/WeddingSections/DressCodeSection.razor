@@ -14,15 +14,17 @@
 <Section>
     @if (WrapInBox)
     {
-        <Box Horizontal="true" CustomCss="margin-bottom: 20px">
-            <TopContent>
-                <WebsiteElement Element="WeddingDetails.DressCode.Media" Cover="true" MaxHeight="350px"/>
-            </TopContent>
-            <ChildContent>
-                <h2>@StringProvider.DressCode</h2>
-                <DressCode Dress="WeddingDetails.DressCode" Contact="Contact"/>
-            </ChildContent>
-        </Box>
+        <div class="dresscode-emphasised-card">
+            <Box Horizontal="true" CustomCss="margin-bottom: 20px">
+                <TopContent>
+                    <WebsiteElement Element="WeddingDetails.DressCode.Media" Cover="true"/>
+                </TopContent>
+                <ChildContent>
+                    <h2>@StringProvider.DressCode</h2>
+                    <DressCode Dress="WeddingDetails.DressCode" Contact="Contact"/>
+                </ChildContent>
+            </Box>
+        </div>
         
         <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
         <div class="dresscode-buttons">
