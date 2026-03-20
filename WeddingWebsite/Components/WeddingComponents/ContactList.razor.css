@@ -13,6 +13,26 @@ th, td {
     text-align: left;
 }
 
+.contact-center-container {
+    width: min(100%, 36rem);
+}
+
+.contact-center-container h2,
+.contact-center-container h3,
+.contact-center-container p,
+.contact-center-container .text-below {
+    text-align: center;
+}
+
+.contact-center-container p a,
+.contact-center-container ::deep a {
+    display: inline-block;
+}
+
+.contact-center-container ::deep .group {
+    justify-content: center;
+}
+
 h2 {
     margin-top: 15px;
     margin-bottom: 10px;
@@ -24,4 +44,18 @@ h2 {
 
 .contact-inner {
     padding: 5px 10px;
+}
+
+@media only screen and (max-width: 576px) {
+    .contact-center-container {
+        width: 100%;
+    }
+
+    .contact-center-container ::deep .mud-input-control,
+    .contact-center-container ::deep .mud-select,
+    .contact-center-container ::deep .rounded-corner-box,
+    .contact-center-container ::deep .outlined-box {
+        width: 100%;
+        max-width: 100%;
+    }
 }

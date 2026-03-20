@@ -10,16 +10,16 @@
 }
 
 .dresscode-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(75vw, 22rem), 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
-    justify-items: center;
-    align-items: start;
+    align-items: flex-start;
 }
 
 .dresscode-buttons ::deep a {
-    width: min(75vw, 22rem);
-    max-width: 100%;
+    width: max-content;
+    max-width: 75vw;
     white-space: nowrap;
     font-size: clamp(16px, 3.8vw, 24px);
     line-height: 1.2;

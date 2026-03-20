@@ -1,8 +1,25 @@
 ﻿table {
     margin: auto;
     text-align: left;
+    width: min(66%, 48rem);
+    max-width: 100%;
 }
 
 th, td {
     padding: 10px;
+}
+
+@media only screen and (max-width: 576px) {
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    td {
+        overflow-wrap: anywhere;
+    }
 }

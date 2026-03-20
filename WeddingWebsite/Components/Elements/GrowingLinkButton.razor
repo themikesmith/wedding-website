@@ -1,10 +1,11 @@
 ﻿@inject IWebsiteConfig Config
+@inject NavigationManager NavigationManager
 
 @using WeddingWebsite.Models.ConfigInterfaces
 @using WeddingWebsite.Models.Theme
 @using WeddingWebsite.Models.WebsiteConfig
 
-<a href="@Data.Link" style="border-color: @Colour; background: @Colour; color: @Colour.GetTextColour()" class="box-shadow">@Data.Text</a>
+<a href="@Data.Link" target="@Target" rel="@Rel" style="border-color: @Colour; background: @Colour; color: @Colour.GetTextColour()" class="box-shadow">@Data.Text</a>
 
 @code {
     [Parameter]
@@ -14,5 +15,38 @@
     public SectionTheme? Theme { get; set; }
     
     private Colour Colour => Theme != null ? Theme.Primary : Config.Colours.Primary;
+    private bool IsExternal => IsExternalUrl(Data.Link);
+    private string? Target => IsExternal ? "_blank" : null;
+    private string? Rel => IsExternal ? "noopener noreferrer" : null;
+
+    private bool IsExternalUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return false;
+        }
+
+        if (url.StartsWith("/") || url.StartsWith("#"))
+        {
+            return false;
+        }
+
+        if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var parsed))
+        {
+            return false;
+        }
+
+        if (!parsed.IsAbsoluteUri)
+        {
+            return false;
+        }
+
+        if (!Uri.TryCreate(NavigationManager.BaseUri, UriKind.Absolute, out var baseUri))
+        {
+            return true;
+        }
+
+        return !string.Equals(parsed.Host, baseUri.Host, StringComparison.OrdinalIgnoreCase);
+    }
     
 }

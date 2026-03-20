@@ -1,0 +1,9 @@
+load database
+     from sqlite://app.db
+     into postgresql://postgres:postgres@localhost:5432/wedding_db
+
+ with quote identifiers
+
+  set work_mem = '16MB', maintenance_work_mem = '512 MB'
+;
+

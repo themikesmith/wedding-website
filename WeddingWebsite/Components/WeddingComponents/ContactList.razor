@@ -9,7 +9,7 @@
 
 @inject IStringProvider StringProvider
 
-<div class="container">
+<div class="container contact-center-container">
     <h2>@StringProvider.ContactUsEnterCategory</h2>
     <MudSelect Class="@MudSelectClass" @bind-Value="ContactReason" Label="@StringProvider.CategoryOfEnquiry" Variant="Variant.Outlined" Required="true">
         @foreach (var reason in ReasonsToShow) {
@@ -32,7 +32,7 @@
         }
     }
     @foreach (var contact in MatchingContacts) {
-        <Box>
+        <Box CustomCss="width:min(100%, 36rem); margin-inline:auto;">
             <h3>@contact.NameAndRole</h3>
             @foreach (var method in contact.ContactDetails.GetOptions(Urgency).Methods) {
                 @if (method.Link != null) {
