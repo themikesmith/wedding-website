@@ -6,7 +6,7 @@
 @inject IStringProvider StringProvider
 
 <Section Id="accommodation">
-    <SectionHeading>@StringProvider.Accommodation</SectionHeading>
+    <SectionHeading HeadingOverflowHandling="scale-only">@StringProvider.Accommodation</SectionHeading>
     <p class="description">@WeddingDetails.AccommodationDetails.Description</p>
     @foreach (var hotel in WeddingDetails.AccommodationDetails.Hotels.Where(hotel => hotel.Emphasise))
     {

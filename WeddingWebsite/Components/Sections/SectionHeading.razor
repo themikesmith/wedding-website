@@ -1,15 +1,21 @@
 ﻿@using WeddingWebsite.Models.Theme
 @using WeddingWebsite.Models.WebsiteConfig
 
-<h2 style="color: @TextColour">@ChildContent</h2>
+<h2 class="@HeadingCssClass" style="color: @TextColour">@ChildContent</h2>
 
 @code {
     [Parameter]
     public required RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public string HeadingOverflowHandling { get; set; } = "default";
     
     [CascadingParameter]
     public SectionTheme? Theme { get; set; }
     
     private bool IsDark => Theme is { Background.IsDark: true };
     private Colour TextColour => IsDark ? Colour.White : Colour.DarkGrey;
+    private string HeadingCssClass => HeadingOverflowHandling.Equals("scale-only", StringComparison.OrdinalIgnoreCase)
+        ? "heading-overflow-handling-scale-only"
+        : string.Empty;
 }

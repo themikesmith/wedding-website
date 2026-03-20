@@ -6,3 +6,12 @@
     text-align: center;
     line-height: 2;
 }
+
+h2.heading-overflow-handling-scale-only {
+    font-size: clamp(16px, 6vw, 32px);
+    line-height: 1.2;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    max-width: 100%;
+}

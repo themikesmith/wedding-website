@@ -1,8 +1,13 @@
 ﻿.main-image-content {
     position: absolute;
     top: 0;
-    height: 100vh;
-    width: 100vw;
+    left: 0;
+    right: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100%;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
 }
 
 .bride-and-groom-names {
@@ -15,16 +20,30 @@
     text-shadow: 2px 2px 4px #000000;
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 576px) {
+    .main-image-content {
+        min-height: 110svh;
+    }
+
     .bride-and-groom-names {
-        margin-top: 18vh;
+        margin-top: 12svh;
+        font-size: clamp(36px, 11vw, 52px);
     }
     .bride-and-groom-names span {
         display: block;
     }
     .second-name {
-        line-height: 3;
+        line-height: 2.2;
     }
+
+    .wedding-date {
+        margin-top: 2vh;
+        margin-bottom: 2vh;
+        font-size: clamp(24px, 7vw, 34px);
+    }
+
+    .top-buttons { margin-top: 4vh; }
+    .top-info { margin-top: 2vh; margin-bottom: 2vh; font-size: clamp(18px, 5vw, 24px); }
 }
 
 .wedding-date {
@@ -39,7 +58,7 @@
 
 .top-buttons {
     text-align: center;
-    margin-top: 10vh;
+    margin-top: 8vh;
 }
 
 .top-info {

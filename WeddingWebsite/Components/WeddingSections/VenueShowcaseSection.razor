@@ -6,7 +6,7 @@
 @inject IStringProvider StringProvider
 
 <Section>
-    <SectionHeading>@StringProvider.VenueShowcase</SectionHeading>
+    <SectionHeading HeadingOverflowHandling="scale-only">@StringProvider.VenueShowcase</SectionHeading>
     <VenueShowcase Venues="WeddingDetails.Events.Select(ev => ev.Venue).DistinctBy(v => v.Name).ToList()"/>
 </Section>
 
