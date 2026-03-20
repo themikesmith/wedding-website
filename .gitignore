@@ -63,3 +63,5 @@ favicon.*
 app.db
 CustomConfig.cs
 CustomRsvpForm.cs
+WeddingWebsite/PrivatePhotos/*
+!WeddingWebsite/PrivatePhotos/.gitkeep

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using WeddingWebsite.Components;
@@ -68,6 +69,8 @@ builder.Services.AddScoped<ITodoStore, TodoStore>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.Configure<PrivateMediaOptions>(builder.Configuration.GetSection("PrivateMedia"));
     
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
@@ -106,6 +109,16 @@ builder.Services.AddIdentityCore<Account>(options => {
 
 var app = builder.Build();
 
+var publicPhotosPath = Path.Combine(app.Environment.WebRootPath ?? string.Empty, "Photos");
+if (Directory.Exists(publicPhotosPath))
+{
+    var hasPublicPhotos = Directory.EnumerateFiles(publicPhotosPath, "*", SearchOption.AllDirectories).Any();
+    if (hasPublicPhotos)
+    {
+        throw new InvalidOperationException("Public static folder wwwroot/Photos contains files. Move restricted media to private storage and keep only explicitly public assets under dedicated public paths.");
+    }
+}
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -121,6 +134,58 @@ if (!app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+var privateMediaOptions = builder.Configuration.GetSection("PrivateMedia").Get<PrivateMediaOptions>() ?? new PrivateMediaOptions();
+var privateMediaRoot = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, privateMediaOptions.RootPath));
+var privateMediaAllowedExtensions = new HashSet<string>(
+    privateMediaOptions.AllowedExtensions.Select(ext => ext.ToLowerInvariant()));
+var privateMediaContentTypeProvider = new FileExtensionContentTypeProvider();
+
+app.MapGet("/Photos/{**photoPath}", (HttpContext context, string? photoPath) =>
+{
+    if (string.IsNullOrWhiteSpace(photoPath))
+    {
+        return Results.NotFound();
+    }
+
+    var normalizedPath = photoPath.Replace('\\', '/').Trim('/');
+    if (normalizedPath.Length == 0 || normalizedPath.Contains("..", StringComparison.Ordinal))
+    {
+        return Results.NotFound();
+    }
+
+    var extension = Path.GetExtension(normalizedPath).ToLowerInvariant();
+    if (!privateMediaAllowedExtensions.Contains(extension))
+    {
+        return Results.NotFound();
+    }
+
+    var fullPath = Path.GetFullPath(Path.Combine(privateMediaRoot, normalizedPath));
+    if (!fullPath.StartsWith(privateMediaRoot, StringComparison.Ordinal))
+    {
+        return Results.NotFound();
+    }
+
+    if (!File.Exists(fullPath))
+    {
+        return Results.NotFound();
+    }
+
+    var fileInfo = new FileInfo(fullPath);
+    if (privateMediaOptions.MaxFileSizeBytes.HasValue && fileInfo.Length > privateMediaOptions.MaxFileSizeBytes.Value)
+    {
+        return Results.NotFound();
+    }
+
+    if (!privateMediaContentTypeProvider.TryGetContentType(fullPath, out var contentType))
+    {
+        contentType = "application/octet-stream";
+    }
+
+    context.Response.Headers.CacheControl = "private, no-store";
+    context.Response.Headers.XContentTypeOptions = "nosniff";
+    return Results.File(fullPath, contentType);
+}).RequireAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

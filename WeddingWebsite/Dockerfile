@@ -27,6 +27,7 @@ WORKDIR /App
 COPY --from=build /App/"Data\app.db" .
 COPY --from=build /App/db-urchin-ca-certificate.crt .
 COPY --from=build /App/out .
+COPY --from=build /App/PrivatePhotos ./PrivatePhotos
 ENV PGSQLROOTCERT="db-urchin-ca-certificate.crt"
 ENTRYPOINT ["dotnet", "WeddingWebsite.dll"]
 EXPOSE 8080
