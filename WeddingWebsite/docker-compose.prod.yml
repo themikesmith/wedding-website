@@ -1,0 +1,8 @@
+# Before running this file, copy .env.prod.example to .env.prod and pass --env-file .env.prod.
+services:
+  web:
+    container_name: wedding_website
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+    restart: unless-stopped

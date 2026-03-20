@@ -65,3 +65,4 @@ CustomConfig.cs
 CustomRsvpForm.cs
 WeddingWebsite/PrivatePhotos/*
 !WeddingWebsite/PrivatePhotos/.gitkeep
+WeddingWebsite/.env.prod

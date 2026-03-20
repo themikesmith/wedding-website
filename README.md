@@ -27,6 +27,29 @@ Once you've done these essential steps in this order, you can do some other step
 - Customise the website (see below).
 - Use `dotnet publish` and get it working on your hosting provider. You'll want to set up a service to keep it running and use a reverse proxy like Nginx.
 
+### Docker Compose (Dev and Production-Style)
+
+- Dev run (uses `docker-compose.yml` + `docker-compose.override.yml` automatically):
+	- `cd WeddingWebsite`
+	- `docker compose up --build`
+- Production-style run locally:
+	- Copy `WeddingWebsite/.env.prod.example` to `WeddingWebsite/.env.prod` and set `DATABASE_URL`.
+	- `cd WeddingWebsite`
+	- `docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+
+Notes:
+- `DATABASE_URL` is read by `Program.cs` first and overrides appsettings connection strings.
+- `DATABASE_URL` should be in Npgsql key/value format (not URL format), for example:
+	- `Host=db;Port=5432;Database=wedding_db;Username=postgres;Password=postgres`
+- `ASPNETCORE_ENVIRONMENT` in compose determines which `appsettings.{Environment}.json` file is loaded.
+
+Volume safety:
+- Safe (keeps PostgreSQL data volume):
+	- `docker compose down --remove-orphans`
+	- `docker compose up -d --build`
+- Destructive (deletes PostgreSQL named volume data):
+	- `docker compose down -v --remove-orphans`
+
 ## Need Some Help?
 
 **Tech Support**: If you run into trouble getting it set up or customising it, please raise a GitHub issue and I'll get back to you. If you don't have much coding experience or need more help, I'm happy to set up a call and guide you through the process. I'll be happy to offer up to 3 hours for free which should be enough to do your first-time setup and get everything up and running.
