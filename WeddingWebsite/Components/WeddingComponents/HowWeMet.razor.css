@@ -22,16 +22,33 @@ p {
     text-align-last: center;
 }
 
-@media only screen and (max-width: 700px) {
-    .image-container {
-        display: none;
-    }
-    
+@media only screen and (max-width: 800px) {
     .row {
-        justify-content: center;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 24px;
+    }
+
+    .image-container {
+        display: block;
+        width: min(210px, 100%);
+        margin: 0 auto;
+    }
+
+    .image-container ::deep .website-element {
+        max-height: 190px !important;
+        width: auto;
+        max-width: 100%;
+        margin: 0 auto;
     }
     
     .text {
         font-size: 14px;
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 0;
+        width: min(560px, 100%);
     }
 }
