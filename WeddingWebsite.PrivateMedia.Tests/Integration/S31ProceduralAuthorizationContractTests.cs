@@ -58,6 +58,9 @@ public class S31ProceduralAuthorizationContractTests
         yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "ChooseDeliveryAddress", ["RegistryService.ChooseDeliveryAddress("] )];
         yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "MarkCompleted", ["RegistryService.MarkClaimAsCompleted("] )];
         yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "SaveNotes", ["RegistryService.SetClaimNotes("] )];
+        yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "AdminUnmarkClaimAsCompleted", ["RegistryService.MarkClaimAsNotCompleted("] )];
+        yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "AdminMarkClaimAsCompleted", ["RegistryService.MarkClaimAsCompleted("] )];
+        yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Registry/RegistryItemPage.razor", "AdminRemoveClaim", ["RegistryService.UnclaimRegistryItem("] )];
 
         yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Account.razor", "ChangePassword", ["UserManager.ResetPasswordAsync("] )];
         yield return [new MutationMethodCase("WeddingWebsite/Components/Pages/Auth/Register.razor", "RegisterUser", ["UserManager.CreateAsync(", "AdminService.AddGuestToAccount("] )];
