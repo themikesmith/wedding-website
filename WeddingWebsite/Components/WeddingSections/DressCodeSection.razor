@@ -25,17 +25,11 @@
         </Box>
         
         <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
-        <div class="dresscode-buttons" style="text-align: center;">
-            <div>
-            <span style="margin-left: @buttonSpacing"></span>
+        <div class="dresscode-buttons">
             @foreach (var button in Config.DressCodeButtons.Buttons)
             {
-                <p></p>
                 <GrowingLinkButton Data="button"/>
-                <p></p>
-                <span style="margin-left: @buttonSpacing"></span>
             }
-            </div>
         </div>
     </CascadingValue>
     
@@ -54,14 +48,10 @@
             </RightContent>
         </SideBySide>
         <CascadingValue Value="@(new SectionTheme(Colour.DarkGrey, Config.DressCodeButtons.Colour ?? Config.Colours.Secondary, null))">
-        <div class="dresscode-buttons" style="text-align: center;">
-            <span style="margin-left: @buttonSpacing"></span>
+        <div class="dresscode-buttons">
             @foreach (var button in Config.DressCodeButtons.Buttons)
             {
-                <p></p>
                 <GrowingLinkButton Data="button"/>
-                <p></p>
-                <span style="margin-left: @buttonSpacing"></span>
             }
         </div>
     </CascadingValue>
@@ -72,8 +62,6 @@
     [Parameter] public required bool WrapInBox { get; set; }
     
     [Parameter] public required bool ShowContact { get; set; }
-    
-    string buttonSpacing = "10px";
 
     private IContact? Contact => !ShowContact ? null : 
         WeddingDetails.Contacts.FirstOrDefault(c => c.ContactDetails.NotUrgent.MatchesReason(ContactReason.DressCode))
