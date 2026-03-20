@@ -247,7 +247,7 @@
         NavigationManager.NavigateTo($"/admin/account/{Account.Id}/{guest.Id}");
     }
 
-    private void ApplyEmailChange()
+    private async Task ApplyEmailChange()
     {
         if (Account is null)
         {
@@ -256,7 +256,7 @@
 
         var oldEmail = Account.Email;
         Account.Email = Email == "" ? null : Email;
-        var result = UserManager.UpdateAsync(Account).Result;
+        var result = await UserManager.UpdateAsync(Account);
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
@@ -269,7 +269,7 @@
         }
     }
     
-    private void ApplyUserNameChange()
+    private async Task ApplyUserNameChange()
     {
         if (Account is null)
         {
@@ -278,7 +278,7 @@
 
         var oldUserName = Account.UserName;
         Account.UserName = UserName;
-        var result = UserManager.UpdateAsync(Account).Result;
+        var result = await UserManager.UpdateAsync(Account);
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
@@ -291,12 +291,12 @@
         }
     }
 
-    private void ApplyPasswordChange()
+    private async Task ApplyPasswordChange()
     {
         if (Account is null) return;
         
-        var token = UserManager.GeneratePasswordResetTokenAsync(Account).Result;
-        var result = UserManager.ResetPasswordAsync(Account, token, NewPassword).Result;
+        var token = await UserManager.GeneratePasswordResetTokenAsync(Account);
+        var result = await UserManager.ResetPasswordAsync(Account, token, NewPassword);
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
@@ -329,10 +329,10 @@
 
 
     [Authorize (Roles = "Owner")]
-    private void DemoteUser()
+    private async Task DemoteUser()
     {
         if (Account is null) return;
-        var result = UserManager.RemoveFromRoleAsync(Account, "Admin").Result;
+        var result = await UserManager.RemoveFromRoleAsync(Account, "Admin");
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
@@ -347,10 +347,10 @@
     }
 
     [Authorize (Roles = "Owner")]
-    private void PromoteUser()
+    private async Task PromoteUser()
     {
         if (Account is null) return;
-        var result = UserManager.AddToRoleAsync(Account, "Admin").Result;
+        var result = await UserManager.AddToRoleAsync(Account, "Admin");
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
@@ -370,7 +370,7 @@
     }
     
     [Authorize (Roles = "Owner")]
-    private void DeleteAccount()
+    private async Task DeleteAccount()
     {
         if (Account is null) return;
         
@@ -380,7 +380,7 @@
             return;
         }
         
-        var result = UserManager.DeleteAsync(Account).Result;
+        var result = await UserManager.DeleteAsync(Account);
         if (!result.Succeeded)
         {
             ErrorText = string.Join(" ", result.Errors.Select(e => e.Description));
