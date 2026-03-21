@@ -1,12 +1,14 @@
 ﻿using WeddingWebsite.Data.Stores;
+using WeddingWebsite.Core;
 using WeddingWebsite.Models.Todo;
 
 namespace WeddingWebsite.Services;
 
-public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
+public class TodoService(ITodoStore todoStore, IStore store, ICurrentUserContext currentUserContext) : ITodoService
 {
     public IEnumerable<IEnumerable<TodoItem>> GetGroupedTodoItems()
     {
+        currentUserContext.EnsureAuthenticated();
         var todoItems = todoStore.GetAllTodoItems();
         
         var groupedItems = todoItems
@@ -24,27 +26,32 @@ public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
     
     public void MarkItemAsCompleted(string itemId)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.SetTodoItemCompletedAt(itemId, DateTime.UtcNow);
     }
     
     public void MarkItemAsWaiting(string itemId, TimeSpan waitingTime)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.SetTodoItemWaitingUntil(itemId, DateTime.UtcNow.Add(waitingTime));
     }
     
     public void MarkItemAsActionRequired(string itemId)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.SetTodoItemWaitingUntil(itemId, null);
         todoStore.SetTodoItemCompletedAt(itemId, null);
     }
     
     public TodoItem? GetTodoItem(string itemId)
     {
+        currentUserContext.EnsureAuthenticated();
         return todoStore.GetTodoItem(itemId);
     }
 
     public void AddNewItem(string? groupId = null)
     {
+        currentUserContext.EnsureInRole("Admin");
         var newId = Guid.NewGuid().ToString();
         todoStore.AddTodoItem(newId);
         if (groupId != null)
@@ -55,11 +62,13 @@ public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
     
     public void RenameItem(string itemId, string newText)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.RenameTodoItem(itemId, newText);
     }
 
     public void GroupItem(string itemId)
     {
+        currentUserContext.EnsureInRole("Admin");
         var groupId = Guid.NewGuid().ToString();
         todoStore.AddTodoGroup(groupId, "Todo Group");
         todoStore.SetTodoItemGroup(itemId, groupId);
@@ -67,6 +76,7 @@ public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
     
     public void RemoveGroupFromItem(string itemId)
     {
+        currentUserContext.EnsureInRole("Admin");
         var item = todoStore.GetTodoItem(itemId);
         if (item?.Group != null)
         {
@@ -82,16 +92,19 @@ public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
     
     public void RenameGroup(string groupId, string newName)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.RenameTodoGroup(groupId, newName);
     }
 
     public void DeleteItem(string itemId)
     {
+        currentUserContext.EnsureInRole("Admin");
         todoStore.DeleteTodoItem(itemId);
     }
     
     public void SetItemOwnerByUserName(string itemId, string? ownerUserName)
     {
+        currentUserContext.EnsureInRole("Admin");
         string? ownerId = null;
         if (ownerUserName != null)
         {
@@ -103,6 +116,7 @@ public class TodoService(ITodoStore todoStore, IStore store) : ITodoService
     
     public IEnumerable<TodoItem> GetTodoItemsRequiringActionForGivenUserNameOrNoUserName(string userName)
     {
+        currentUserContext.EnsureAuthenticated();
         var allItems = todoStore.GetAllTodoItems();
         return allItems
             .Where(item => item.OwnerUserName == null || item.OwnerUserName == userName)

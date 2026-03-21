@@ -19,10 +19,11 @@
 
 <PageTitle>@StringProvider.Home</PageTitle>
 
-@((MarkupString)@WeddingDetails.MainImage.GetHtml("main-image"))
+<div class="home-hero">
+    <img class="main-image home-hero-image" src="@WeddingDetails.MainImage.Url" alt="@WeddingDetails.MainImage.AltText" />
 
-<div class="main-image-content">
-    <h1 class="bride-and-groom-names" style="color: @Config.Colours.PrimaryBackground">
+    <div class="main-image-content">
+        <h1 class="bride-and-groom-names" style="color: @Config.Colours.PrimaryBackground">
         @if (Config.BrideFirst)
         {
             <span><span class="first-name">@WeddingDetails.Bride.Name.First</span> & <span class="second-name">@WeddingDetails.Groom.Name.First</span></span>
@@ -55,8 +56,9 @@
                 <span style="margin-left: @buttonSpacing"></span>
             }
         </div>
-    </CascadingValue>
-    <h4 class="top-info">Please kindly RSVP by May 15, 2026.</h4>
+        </CascadingValue>
+        <h4 class="top-info">Please kindly RSVP by May 15, 2026.</h4>
+    </div>
 </div>
 
 

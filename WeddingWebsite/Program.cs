@@ -55,6 +55,8 @@ builder.Services.AddScoped(typeof(ICredentials), credentialsType);
 // StandardBritishEnglish as is done in FriendlyBritishEnglish.
 builder.Services.AddScoped<IStringProvider, FriendlyAmericanEnglish>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserContext, HttpCurrentUserContext>();
 
 builder.Services.AddScoped<IDetailsAndConfigValidator, DetailsAndConfigValidator>();
 builder.Services.AddScoped<IAccountService, AccountService>();

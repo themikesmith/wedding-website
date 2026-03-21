@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using WeddingWebsite.Core;
 using WeddingWebsite.Data.Models;
 using WeddingWebsite.Data.Stores;
 using WeddingWebsite.Models.Accounts;
@@ -7,21 +8,24 @@ using WeddingWebsite.Models.Accounts;
 namespace WeddingWebsite.Services;
 
 [Authorize]
-public class AccountService(IStore store) : IAccountService
+public class AccountService(IStore store, ICurrentUserContext currentUserContext) : IAccountService
 {
     public IEnumerable<GuestWithId> GetOwnGuests(ClaimsPrincipal user)
     {
+        EnsureAuthenticated(user);
         return store.GetGuestsForUser(GetUserId(user));
     }
     
     public void Log(ClaimsPrincipal user, AccountLogType logType, string description, string? affectedUserId = null)
     {
+        EnsureAuthenticated(user);
         var affectedUser = affectedUserId ?? GetUserId(user);
         store.AddAccountLog(affectedUser, GetUserId(user), logType, description);
     }
     
     public void Log(string actorUserName, AccountLogType logType, string description, string? affectedUserId = null)
     {
+        currentUserContext.EnsureAuthenticated();
         var actorId = store.GetUserIdByUserName(actorUserName);
         if (actorId == null)
         {
@@ -46,5 +50,13 @@ public class AccountService(IStore store) : IAccountService
         }
 
         return userId;
+    }
+
+    private static void EnsureAuthenticated(ClaimsPrincipal user)
+    {
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            throw new UnauthorizedAccessException("Authentication is required for this operation.");
+        }
     }
 }

@@ -73,6 +73,15 @@
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            TodoItemsNoOwner = [];
+            TodoItemsAssignedToUser = [];
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
         var userName = user.Identity?.Name ?? "";
 
         var todoItems = TodoService.GetTodoItemsRequiringActionForGivenUserNameOrNoUserName(userName).ToList();
