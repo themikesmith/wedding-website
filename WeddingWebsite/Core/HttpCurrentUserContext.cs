@@ -40,6 +40,12 @@ public class HttpCurrentUserContext(IHttpContextAccessor httpContextAccessor) : 
         {
             throw new UnauthorizedAccessException("Authentication is required for this operation.");
         }
+
+        var userId = Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            throw new UnauthorizedAccessException("A valid user identifier claim is required for this operation.");
+        }
     }
 
     public void EnsureInRole(string role)
