@@ -425,7 +425,7 @@
                 return;
             }
         }
-        decimal contribution = 0.00M;  // TODO populate
+        decimal contribution = 0.00M;
         if (Item.AllowsPartialContributions)
         {
             if (!decimal.TryParse(EnteredContribution, out contribution))
@@ -448,6 +448,21 @@
                 StateHasChanged();
                 return;
             }
+
+            if (contribution == 0.00M)
+            {
+                ErrorText = $"Please enter a contribution between $0.00 and ${Item.RemainingCost()}.";
+                StateHasChanged();
+                return;
+            }
+        }
+        else { // if (!Item.AllowsPartialContributions
+            @* if (contribution == 0.00M) {
+                contribution = Item.MaxCost;
+            } *@
+            // was not available in UI to set. so set it
+            contribution = Item.MaxCost;
+            // else do nothing -- it's blank but that's fine because we don't allow partial contributions, so it will be treated as the full cost anyway
         }
 
         var result = RegistryService.ClaimRegistryItem(Item.Id, UserId, contribution, quantity);

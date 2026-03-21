@@ -31,11 +31,11 @@
         <p class="description">Keep track of what needs doing on this page. In the config file, you can add the <code>TodoListSummary</code> section which will display tasks assigned to you on the homepage.</p>
     }
     
-     <Button OnClick="AddNewItem" AddBottomMargin="true">Add New Item</Button>
+    <Button OnClickAsync="AddNewItem" AddBottomMargin="true">Add New Item</Button>
     
     @foreach (var status in Enum.GetValues<TodoItemStatus>())
     {
-        <TodoListForStatus Status="status" GroupedTodoItems="GroupedTodoItems" ParentStateHasChanged="RefreshState"/>
+        <TodoListForStatus Status="status" GroupedTodoItems="GroupedTodoItems" ParentStateHasChanged="RefreshStateAsync"/>
     }
     
 </Section>
@@ -53,17 +53,17 @@
         GroupedTodoItems = TodoService.GetGroupedTodoItems();
     }
 
-    private void RefreshState()
+    private Task RefreshStateAsync()
     {
         GroupedTodoItems = TodoService.GetGroupedTodoItems();
-        StateHasChanged();
+        return InvokeAsync(StateHasChanged);
     }
 
-    private void AddNewItem()
+    private async Task AddNewItem()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
 
         TodoService.AddNewItem();
-        RefreshState();
+        await RefreshStateAsync();
     }
 }

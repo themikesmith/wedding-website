@@ -106,7 +106,7 @@
     public TodoItem? Item { get; set; }
     
     [Parameter]
-    public Action? ParentStateHasChanged { get; set; }
+    public EventCallback ParentStateHasChanged { get; set; }
 
     private IList<string> PossibleOwnerUserNames { get; set; } = [];
     
@@ -155,34 +155,34 @@
         StateHasChanged();
     }
     
-    private void SaveEdits()
+    private async Task SaveEdits()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        ApplyToItem(item => TodoService.RenameItem(item.Id, Text));
-        ApplyToItem(item => TodoService.SetItemOwnerByUserName(item.Id, string.IsNullOrWhiteSpace(OwnerUserName) ? null : OwnerUserName));
+        await ApplyToItem(item => TodoService.RenameItem(item.Id, Text));
+        await ApplyToItem(item => TodoService.SetItemOwnerByUserName(item.Id, string.IsNullOrWhiteSpace(OwnerUserName) ? null : OwnerUserName));
         IsEditing = false;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     
-    private void CancelEdits()
+    private async Task CancelEdits()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
         IsEditing = false;
         if (Item?.Text == null)
         {
             // This prevents it from auto-enabling edit mode upon refresh, as the user has explicitly chosen for no text
-            ApplyToItem(item => TodoService.RenameItem(item.Id, ""));
+            await ApplyToItem(item => TodoService.RenameItem(item.Id, ""));
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     
-    private void ApplyToItem(Action<TodoItem> action)
+    private async Task ApplyToItem(Action<TodoItem> action)
     {
         if (Item == null) return;
         action(Item);
         Item = TodoService.GetTodoItem(Item.Id);
-        StateHasChanged();
-        ParentStateHasChanged?.Invoke();
+        await InvokeAsync(StateHasChanged);
+        await ParentStateHasChanged.InvokeAsync();
     }
     
     /// <summary>
@@ -190,87 +190,79 @@
     /// Arbitrary changes of status are permitted, but may not work properly (e.g. wait time will not be preserved).
     /// This is primarily intended for use on the homepage, where waiting/completed tasks will disappear from view.
     /// </summary>
-    private Action ApplyToItemWithUndoAction(Action<TodoItem> action)
+    private async Task<Func<Task>> ApplyToItemWithUndoAction(Action<TodoItem> action)
     {
-        if (Item == null) return () => { };
+        if (Item == null) return () => Task.CompletedTask;
         var before = Item with {};
-        ApplyToItem(action);
-        return () =>
+        await ApplyToItem(action);
+        return async () =>
         {
             if (Item.Status != before.Status)
             {
                 switch (before.Status)
                 {
                     case TodoItemStatus.ActionRequired:
-                        MarkItemAsActionRequired();
+                        await MarkItemAsActionRequired();
                         break;
                     case TodoItemStatus.Waiting:
-                        MarkItemAsWaiting();
+                        await MarkItemAsWaiting();
                         break;
                     case TodoItemStatus.Completed:
-                        MarkItemAsCompleted();
+                        await MarkItemAsCompleted();
                         break;
                 }
             }
             Item = TodoService.GetTodoItem(Item.Id);
-            StateHasChanged();
-            ParentStateHasChanged?.Invoke();
+            await InvokeAsync(StateHasChanged);
+            await ParentStateHasChanged.InvokeAsync();
         };
     }
 
-    private void MarkItemAsCompleted()
+    private async Task MarkItemAsCompleted()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        var undoAction = ApplyToItemWithUndoAction(item => TodoService.MarkItemAsCompleted(item.Id));
+        var undoAction = await ApplyToItemWithUndoAction(item => TodoService.MarkItemAsCompleted(item.Id));
         Snackbar.Add($"Completed: {Item?.Text}", Severity.Success, config =>
         {
             config.Action = "Undo";
             config.ActionColor = Color.Warning;
-            config.OnClick = _ =>
-            {
-                undoAction();
-                return Task.CompletedTask;
-            };
+            config.OnClick = async _ => { await undoAction(); };
         });
     }
     
-    private void MarkItemAsWaiting(int days = 3)
+    private async Task MarkItemAsWaiting(int days = 3)
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        var undoAction = ApplyToItemWithUndoAction(item => TodoService.MarkItemAsWaiting(item.Id, TimeSpan.FromDays(days)));
+        var undoAction = await ApplyToItemWithUndoAction(item => TodoService.MarkItemAsWaiting(item.Id, TimeSpan.FromDays(days)));
         Snackbar.Add($"Snoozed for {days} days: {Item?.Text}", Severity.Info, config =>
         {
             config.Action = "Undo";
             config.ActionColor = Color.Warning;
-            config.OnClick = _ =>
-            {
-                undoAction();
-                return Task.CompletedTask;
-            };
+            config.OnClick = async _ => { await undoAction(); };
         });
     }
     
-    private void MarkItemAsActionRequired()
+    private async Task MarkItemAsActionRequired()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        ApplyToItem(item => TodoService.MarkItemAsActionRequired(item.Id));
+        await ApplyToItem(item => TodoService.MarkItemAsActionRequired(item.Id));
         Snackbar.Add($"Marked as action required: {Item?.Text}", Severity.Warning);
     }
     
-    private void Group()
+    private async Task Group()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        ApplyToItem(item => TodoService.GroupItem(item.Id));
+        await ApplyToItem(item => TodoService.GroupItem(item.Id));
         if (Text == (Item?.Text ?? "") && OwnerUserName == (Item?.OwnerUserName ?? ""))
         {
-            CancelEdits();
+            await CancelEdits();
         }
     }
     
-    private void Delete()
+    private async Task Delete()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
-        ApplyToItem(item => TodoService.DeleteItem(item.Id));
+        await ApplyToItem(item => TodoService.DeleteItem(item.Id));
         IsEditing = false;
     }
 }

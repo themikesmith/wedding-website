@@ -15,7 +15,7 @@
     public IEnumerable<IEnumerable<TodoItem>> GroupedTodoItems { get; set; } = [];
     
     [Parameter]
-    public Action? ParentStateHasChanged { get; set; }
+    public EventCallback ParentStateHasChanged { get; set; }
 
     private string Name => Status switch
     {

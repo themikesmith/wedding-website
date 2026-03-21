@@ -35,10 +35,10 @@
         @if (IsEditing)
         {
             <div class="group-actions">
-                <Button OnClick="AddNewItem">New Item in Group</Button>
+                <Button OnClickAsync="AddNewItem">New Item in Group</Button>
                 @if (Items.Count() == 1)
                 {
-                    <Button OnClick="Ungroup">Ungroup</Button>
+                    <Button OnClickAsync="Ungroup">Ungroup</Button>
                 }
                 <Button OnClick="CancelEdits">Exit Edit Mode</Button>
             </div>
@@ -55,7 +55,7 @@
     public required IEnumerable<TodoItem> Items { get; set; }
     
     [Parameter]
-    public Action? ParentStateHasChanged { get; set; }
+    public EventCallback ParentStateHasChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,21 +63,21 @@
         CurrentUser = authState.User;
     }
 
-    private void Ungroup()
+    private async Task Ungroup()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
         if (Items.Count() > 1) return;
         var item = Items.First();
         TodoService.RemoveGroupFromItem(item.Id);
-        ParentStateHasChanged?.Invoke();
+        await ParentStateHasChanged.InvokeAsync();
     }
     
-    private void AddNewItem()
+    private async Task AddNewItem()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
         if (Items.GetGroup() == null) return;
         TodoService.AddNewItem(Items.GetGroup()?.Id);
-        ParentStateHasChanged?.Invoke();
+        await ParentStateHasChanged.InvokeAsync();
     }
     
     private void EnableEditMode()
@@ -93,13 +93,13 @@
         StateHasChanged();
     }
     
-    private void SaveEdits()
+    private async Task SaveEdits()
     {
         if (!CurrentUser.IsInRole("Admin")) return;
         var groupId = Items.GetGroup()?.Id;
         if (groupId == null) return;
         TodoService.RenameGroup(groupId, Name);
         IsEditing = false;
-        ParentStateHasChanged?.Invoke();
+        await ParentStateHasChanged.InvokeAsync();
     }
 }

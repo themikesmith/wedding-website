@@ -22,7 +22,7 @@
                     @foreach (var item in TodoItemsAssignedToUser)
                     {
                         <Box CustomCss="margin-bottom: 10px">
-                            <TodoListItem Item="item" ParentStateHasChanged="UpdateState"/>
+                            <TodoListItem Item="item" ParentStateHasChanged="UpdateStateAsync"/>
                         </Box>
                     }
                 }
@@ -32,7 +32,7 @@
                     @foreach (var item in TodoItemsNoOwner)
                     {
                         <Box CustomCss="margin-bottom: 10px">
-                            <TodoListItem Item="item" ParentStateHasChanged="UpdateState"/>
+                            <TodoListItem Item="item" ParentStateHasChanged="UpdateStateAsync"/>
                         </Box>
                     }
                 }
@@ -51,7 +51,7 @@
                 @foreach (var item in TodoItemsAssignedToUser)
                 {
                     <Box CustomCss="margin-bottom: 10px">
-                        <TodoListItem Item="item" ParentStateHasChanged="UpdateState"/>
+                        <TodoListItem Item="item" ParentStateHasChanged="UpdateStateAsync"/>
                     </Box>
                 }
             </Section>
@@ -64,15 +64,14 @@
     private IEnumerable<TodoItem> TodoItemsNoOwner { get; set; } = [];
     private IEnumerable<TodoItem> TodoItemsAssignedToUser { get; set; } = [];
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        
-        UpdateState();
+        await UpdateStateAsync();
     }
 
-    private void UpdateState()
+    private async Task UpdateStateAsync()
     {
-        var authState = AuthStateProvider.GetAuthenticationStateAsync().Result;
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var userName = user.Identity?.Name ?? "";
 
@@ -80,6 +79,6 @@
         TodoItemsNoOwner = todoItems.Where(item => string.IsNullOrWhiteSpace(item.OwnerUserName));
         TodoItemsAssignedToUser = todoItems.Where(item => item.OwnerUserName == userName);
         
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 }
