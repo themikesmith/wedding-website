@@ -43,6 +43,8 @@ Notes:
 	- `Host=db;Port=5432;Database=wedding_db;Username=postgres;Password=postgres`
 - `ASPNETCORE_ENVIRONMENT` in compose determines which `appsettings.{Environment}.json` file is loaded.
 - you can use `sudo docker rmi -f $(sudo docker images --filter "dangling=true" -q --no-trunc)` to filter images
+- Recreate Credentials: If using doctl registry login, the token is stored in ~/.docker/config.json. However, some users report that doctl may not properly configure the credentials for the registry. Manually authenticate using docker login with the token as both username and password:
+-- `docker login registry.digitalocean.com -u <your_token> -p <your_token`
 
 Volume safety:
 - Safe (keeps PostgreSQL data volume):

@@ -1,8 +1,12 @@
 ﻿@using WeddingWebsite.Models.ConfigInterfaces
 @using WeddingWebsite.Models.WebsiteConfig
 
+
 @inject IWebsiteConfig Config
 @inject IStringProvider StringProvider
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@implements IDisposable
 
 <div id="navbar-desktop" class="top-row @CssScroll">
     <NavbarContent/>
@@ -205,6 +209,21 @@
 
 @code {
     [Parameter] public bool Scroll { get; set; } = false;
-    
+
     private string CssScroll => Scroll ? "top-row-scroll-background" : "scrolled";
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        JS.InvokeVoidAsync("updateNavbarMode");
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
 }
