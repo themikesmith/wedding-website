@@ -42,6 +42,7 @@ Notes:
 - `DATABASE_URL` should be in Npgsql key/value format (not URL format), for example:
 	- `Host=db;Port=5432;Database=wedding_db;Username=postgres;Password=postgres`
 - `ASPNETCORE_ENVIRONMENT` in compose determines which `appsettings.{Environment}.json` file is loaded.
+- you can use `sudo docker rmi -f $(sudo docker images --filter "dangling=true" -q --no-trunc)` to filter images
 
 Volume safety:
 - Safe (keeps PostgreSQL data volume):
