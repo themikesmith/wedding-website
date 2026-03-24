@@ -268,17 +268,16 @@ public class RegistryStoreEf : IRegistryStore
     [Authorize(Roles = "Admin")]
     public void ChoosePurchaseMethod(string itemId, string userId, string? purchaseMethodId)
     {
-        // AsNoTracking so the original instance is not in the change tracker;
-        // Update(updatedClaim) can then attach the modified copy without conflict.
         var claim = _context.RegistryItemClaims
-            .AsNoTracking()
             .FirstOrDefault(c => c.ItemId == itemId && c.UserId == userId);
 
         if (claim == null)
             return;
 
         var updatedClaim = claim with { PurchaseMethodId = purchaseMethodId };
-        _context.RegistryItemClaims.Update(updatedClaim);
+        _context.Entry(claim).State = EntityState.Detached;
+        _context.Attach(updatedClaim);
+        _context.Entry(updatedClaim).State = EntityState.Modified;
         _context.SaveChanges();
     }
 
@@ -286,14 +285,15 @@ public class RegistryStoreEf : IRegistryStore
     public void ChooseDeliveryAddress(string itemId, string userId, string? address)
     {
         var claim = _context.RegistryItemClaims
-            .AsNoTracking()
             .FirstOrDefault(c => c.ItemId == itemId && c.UserId == userId);
 
         if (claim == null)
             return;
 
         var updatedClaim = claim with { DeliveryAddress = address };
-        _context.RegistryItemClaims.Update(updatedClaim);
+        _context.Entry(claim).State = EntityState.Detached;
+        _context.Attach(updatedClaim);
+        _context.Entry(updatedClaim).State = EntityState.Modified;
         _context.SaveChanges();
     }
 
@@ -301,14 +301,15 @@ public class RegistryStoreEf : IRegistryStore
     public void MarkClaimAsCompleted(string itemId, string userId)
     {
         var claim = _context.RegistryItemClaims
-            .AsNoTracking()
             .FirstOrDefault(c => c.ItemId == itemId && c.UserId == userId);
 
         if (claim == null)
             return;
 
         var updatedClaim = claim with { CompletedAt = DateTime.UtcNow };
-        _context.RegistryItemClaims.Update(updatedClaim);
+        _context.Entry(claim).State = EntityState.Detached;
+        _context.Attach(updatedClaim);
+        _context.Entry(updatedClaim).State = EntityState.Modified;
         _context.SaveChanges();
     }
 
@@ -316,14 +317,15 @@ public class RegistryStoreEf : IRegistryStore
     public void MarkClaimAsNotCompleted(string itemId, string userId)
     {
         var claim = _context.RegistryItemClaims
-            .AsNoTracking()
             .FirstOrDefault(c => c.ItemId == itemId && c.UserId == userId);
 
         if (claim == null)
             return;
 
         var updatedClaim = claim with { CompletedAt = null };
-        _context.RegistryItemClaims.Update(updatedClaim);
+        _context.Entry(claim).State = EntityState.Detached;
+        _context.Attach(updatedClaim);
+        _context.Entry(updatedClaim).State = EntityState.Modified;
         _context.SaveChanges();
     }
 
@@ -331,14 +333,15 @@ public class RegistryStoreEf : IRegistryStore
     public void SetClaimNotes(string itemId, string userId, string? notes)
     {
         var claim = _context.RegistryItemClaims
-            .AsNoTracking()
             .FirstOrDefault(c => c.ItemId == itemId && c.UserId == userId);
 
         if (claim == null)
             return;
 
         var updatedClaim = claim with { Notes = notes };
-        _context.RegistryItemClaims.Update(updatedClaim);
+        _context.Entry(claim).State = EntityState.Detached;
+        _context.Attach(updatedClaim);
+        _context.Entry(updatedClaim).State = EntityState.Modified;
         _context.SaveChanges();
     }
 }
