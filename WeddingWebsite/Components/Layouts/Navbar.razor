@@ -29,8 +29,8 @@
 </div>
 
 <script>
-    let currentNavbarMode = 'desktop';
-    let navbarModeUpdateQueued = false;
+    window.currentNavbarMode = 'desktop';
+    window.navbarModeUpdateQueued = false;
 
     function withTemporaryDesktopMeasurement(desktopNavbar, measureFunc) {
         const computedStyles = window.getComputedStyle(desktopNavbar);
@@ -122,7 +122,7 @@
         const collapseBuffer = 0;
         const expandBuffer = 24;
 
-        if (currentNavbarMode === 'mobile') {
+        if (window.currentNavbarMode === 'mobile') {
             return requiredWidth + expandBuffer > availableWidth;
         }
 
@@ -139,7 +139,7 @@
         }
 
         document.documentElement.classList.toggle('force-mobile-navbar', useMobileNavbar);
-        currentNavbarMode = useMobileNavbar ? 'mobile' : 'desktop';
+        window.currentNavbarMode = useMobileNavbar ? 'mobile' : 'desktop';
 
         if (useMobileNavbar) {
             desktopNavbar.style.setProperty('display', 'none', 'important');
@@ -152,13 +152,13 @@
     }
 
     function queueNavbarModeUpdate() {
-        if (navbarModeUpdateQueued) {
+        if (window.navbarModeUpdateQueued) {
             return;
         }
 
-        navbarModeUpdateQueued = true;
+        window.navbarModeUpdateQueued = true;
         window.requestAnimationFrame(() => {
-            navbarModeUpdateQueued = false;
+            window.navbarModeUpdateQueued = false;
             updateNavbarMode();
         });
     }
