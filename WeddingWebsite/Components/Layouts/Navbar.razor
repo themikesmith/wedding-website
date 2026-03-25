@@ -193,6 +193,17 @@
         }
     }
 
+    function closeHamburgerMenu(x) {
+        let burger = document.getElementsByClassName('burger-menu')[0];
+        if (burger) {
+            // Only call if menu is open (optional: check .change class or menu state)
+            let dropdown = document.getElementsByClassName('burger-dropdown-content')[0];
+            if (dropdown.style.display !== "none") {
+                burgerClicked(burger);
+            }
+        }
+    }
+
     window.addEventListener('resize', queueNavbarModeUpdate);
     window.addEventListener('load', updateNavbarMode);
     if (document.fonts && document.fonts.ready) {
