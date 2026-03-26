@@ -4,7 +4,7 @@
 
 @if (BackgroundHasPureCssImplementation)
 {
-    <section id="@Id" class="@(Padding ? "with-padding" : "")" style="@CssBackground;@CssColorAttribute">
+    <section id="@Id" class="@(Padding ? "with-padding" : "") navbar-scroll-offset" style="@CssBackground;@CssColorAttribute">
         <div class="section-content @(Center ? "centered" : "")">
             @ChildContent
         </div>
@@ -13,7 +13,7 @@
 else
 {
     <AdvancedBackground Background="AdvancedBackground">
-        <section id="@Id" class="@(Padding ? "with-padding" : "")" style="@CssColorAttribute">
+        <section id="@Id" class="@(Padding ? "with-padding" : "") navbar-scroll-offset" style="@CssColorAttribute">
             <div class="section-content @(Center ? "centered" : "")">
                 @ChildContent
             </div>

@@ -12,3 +12,7 @@
     padding-top: 25px;
     padding-bottom: 25px;
 }
+
+.navbar-scroll-offset {
+    scroll-margin-top: 3.5rem;
+}
